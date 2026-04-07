@@ -28,6 +28,47 @@ public class MovieService:IMovieService
             })
             .ToListAsync();
     }
+
+    public async Task<MovieResponseDto?> UpdateMovieAsync(int id, MovieCreateDto movieDto, int userId)
+    {
+        var movie = await _context.Movies
+            .Include(m => m.Owner)
+            .FirstOrDefaultAsync(m => m.Id == id);
+        if (movie == null)
+            return null;
+        if (movie.UserId != userId)
+        {
+            throw new UnauthorizedAccessException("You are not authorized to update this movie.");  
+        }
+        movie.Title = movieDto.Title;
+        movie.Description = movieDto.Description;
+        movie.ReleaseYear = movieDto.ReleaseYear;
+        movie.Genre = movieDto.Genre;
+        await _context.SaveChangesAsync();
+        return new MovieResponseDto
+        {
+            Id = movie.Id,
+            Title = movie.Title,
+            Description = movie.Description,
+            ReleaseYear = movie.ReleaseYear,
+            Genre = movie.Genre,
+            OwnerUsername = movie.Owner!.Username
+        };
+    }
+    public async Task<bool> DeleteMovieAsync(int id, int userId)
+    {
+        var movie = await _context.Movies.FindAsync(id);
+        if (movie == null)
+            return false;
+        if (movie.UserId != userId)
+        {
+            throw new UnauthorizedAccessException("You are not authorized to delete this movie."); 
+        }
+        _context.Movies.Remove(movie);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
     public async Task<IEnumerable<MovieResponseDto>> GetMyMoviesAsync(int userId)
     {
         return await _context.Movies
