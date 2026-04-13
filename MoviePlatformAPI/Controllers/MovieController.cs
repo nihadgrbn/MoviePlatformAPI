@@ -20,7 +20,6 @@ public class MovieController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize] 
     public async Task<ActionResult<IEnumerable<MovieResponseDto>>> GetMovies()
     {
         var movies = await _movieService.GetAllMoviesAsync();
