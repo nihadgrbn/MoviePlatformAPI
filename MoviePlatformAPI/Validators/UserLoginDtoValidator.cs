@@ -13,7 +13,7 @@ public class UserLoginDtoValidator:AbstractValidator<UserLoginDto>
         
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required")
-            .Length(6, 20).WithMessage("Password must be between 6 and 20 characters");
+            .Length(3, 20).WithMessage("Password must be between 6 and 20 characters");
     }
     
 }

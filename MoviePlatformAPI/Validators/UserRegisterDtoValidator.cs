@@ -18,7 +18,7 @@ public class UserRegisterDtoValidator:AbstractValidator<UserRegisterDto>
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password cannot be empty!")
-            .MinimumLength(6).WithMessage("For security reasons, password must be at least 6 characters long!");
+            .MinimumLength(3).WithMessage("For security reasons, password must be at least 3 characters long!");
     }
     
 }
