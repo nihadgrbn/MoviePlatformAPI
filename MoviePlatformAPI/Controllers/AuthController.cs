@@ -20,9 +20,9 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.Register(request);
         if (result == null) 
-            return BadRequest("Username or email already exists.");
+            return BadRequest(new { Error = "Username or email already exists." });
             
-        return Ok("Register successful");
+        return Ok(new { Message = "Register successful" });
     }
 
     [HttpPost("login")]
@@ -30,8 +30,8 @@ public class AuthController : ControllerBase
     {
         var token = await _authService.Login(request);
         if (token == null) 
-            return BadRequest("Username or password is incorrect");
+            return BadRequest(new { Error = "Username or password is incorrect" });
             
-        return Ok(token);
+        return Ok(new { Token = token });
     }
 }

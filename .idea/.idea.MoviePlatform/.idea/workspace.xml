@@ -9,7 +9,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a067869c-4302-4c45-8ba5-5d904ef66627" name="Changes" comment="" />
+    <list default="true" id="a067869c-4302-4c45-8ba5-5d904ef66627" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MoviePlatform/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MoviePlatform/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatform.Tests/MovieControllerIntegrationTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatform.Tests/MovieControllerIntegrationTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/AuthController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/MovieController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/MovieController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Program.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,6 +48,7 @@
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/UserLoginDto.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/UserRegisterDto.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Data/AppDbContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Middlewares/ExceptionHandlingMiddleware.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Models/Movie.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Models/User.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/AuthService.cs" root0="FORCE_HIGHLIGHTING" />
@@ -54,7 +61,7 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="SWEA" />
+    <option name="selectedTabId" value="Toolset" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -153,6 +160,10 @@
       <workItem from="1775671486467" duration="489000" />
       <workItem from="1775764579117" duration="1781000" />
       <workItem from="1776108283860" duration="3095000" />
+      <workItem from="1776154705259" duration="486000" />
+      <workItem from="1776155371422" duration="1088000" />
+      <workItem from="1776194457819" duration="254000" />
+      <workItem from="1776435889096" duration="2060000" />
     </task>
     <servers />
   </component>

@@ -31,20 +31,15 @@ public class MovieController : ControllerBase
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userIdString == null) 
             return Unauthorized("System could not identify you. Please login again.");
+            
         var userId = int.Parse(userIdString);
-        try
-        {
-            var isDeleted = await _movieService.DeleteMovieAsync(id, userId);
+        
+        var isDeleted = await _movieService.DeleteMovieAsync(id, userId);
 
-            if (!isDeleted)
-                return NotFound("“The film you want to delete was not found.”\n"); 
+        if (!isDeleted)
+            return NotFound("The film you want to delete was not found."); 
 
-            return Ok("Film uğurla silindi!"); 
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return StatusCode(403, ex.Message); 
-        }
+        return Ok("Film successfully deleted");
     }
     [HttpPut("{id}")]
     public async Task<ActionResult<MovieResponseDto>> UpdateMovie(int id, MovieCreateDto movieDto)
@@ -55,19 +50,12 @@ public class MovieController : ControllerBase
 
         var userId = int.Parse(userIdString);
 
-        try
-        {
-            var updatedMovie = await _movieService.UpdateMovieAsync(id, movieDto, userId);
+        var updatedMovie = await _movieService.UpdateMovieAsync(id, movieDto, userId);
 
-            if (updatedMovie == null)
-                return NotFound("Not found you wanwa update film"); // 404
+        if (updatedMovie == null)
+            return NotFound("Not found you wanna update film"); 
 
-            return Ok(updatedMovie); 
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return StatusCode(403, ex.Message); 
-        }
+        return Ok(updatedMovie);
     }
 
     [HttpGet("my-movies")]

@@ -39,4 +39,18 @@ public class MovieControllerIntegrationTests
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+    [Fact]
+    public async Task Register_WithShortPassword_ReturnsBadRequest()
+    {
+        var factory = new WebApplicationFactory<Program>();
+        var client = factory.CreateClient();
+        var badRequestContent = new StringContent(
+            "{\"username\":\"TestUser\", \"email\":\"nnn@test.com\", \"password\":\"12\"}", 
+            System.Text.Encoding.UTF8, 
+            "application/json");
+
+        var response = await client.PostAsync("/api/Auth/register", badRequestContent);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }
