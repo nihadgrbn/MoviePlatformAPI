@@ -7,17 +7,23 @@ public class Movie
 {
     [Key]
     public int Id { get; set; }
+    
     [Required]
+    [MaxLength(250)] 
     public string Title { get; set; } = string.Empty;
 
-    [Required] public string? Description { get; set; }
+    [Required] 
+    [MaxLength(1500)] 
+    public string Description { get; set; } = string.Empty; 
+    
     public int ReleaseYear { get; set; }
+    
     [Required]
-    public string? Genre { get; set; }
+    [MaxLength(50)] 
+    public string Genre { get; set; } = string.Empty; 
+    
     public int UserId { get; set; }
+    
     [ForeignKey("UserId")]
-    public User? Owner { get; set; }    
-    
-    
-    
+    public User? Owner { get; set; } 
 }
