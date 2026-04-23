@@ -9,4 +9,5 @@ public class MovieResponseDto
     public string Genre { get; set; } = string.Empty;
     
     public string OwnerUsername { get; set; } = string.Empty;
+    public List<LinkDto> Links { get; set; } = new List<LinkDto>();
 }

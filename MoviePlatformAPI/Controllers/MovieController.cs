@@ -18,14 +18,29 @@ public class MovieController : ControllerBase
         _movieService = movieService;
     }
 
+    private List<LinkDto> CreateLinksForMovie(int id)
+    {
+        return new List<LinkDto>
+        {
+            new LinkDto(Url.Link("UpdateMovie", new { id }), "update_movie", "PUT"),
+            new LinkDto(Url.Link("DeleteMovie", new { id }), "delete_movie", "DELETE")
+        };
+    }
+
     [HttpGet]
     public async Task<ActionResult<PagedResponseDto<MovieResponseDto>>> GetMovies([FromQuery] MovieQueryParametersDto queryParameters)
     {
         var movies = await _movieService.GetAllMoviesAsync(queryParameters);
+        
+        foreach (var movie in movies.Data)
+        {
+            movie.Links = CreateLinksForMovie(movie.Id);
+        }
+
         return Ok(movies);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}", Name = "DeleteMovie")]
     public async Task<ActionResult<bool>> DeleteMovie(int id)
     {
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -42,7 +57,7 @@ public class MovieController : ControllerBase
         return Ok("Film successfully deleted");
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}", Name = "UpdateMovie")]
     public async Task<ActionResult<MovieResponseDto>> UpdateMovie(int id, MovieCreateDto movieDto)
     {
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -55,6 +70,8 @@ public class MovieController : ControllerBase
 
         if (updatedMovie == null)
             return NotFound("Not found you wanna update film"); 
+
+        updatedMovie.Links = CreateLinksForMovie(updatedMovie.Id);
 
         return Ok(updatedMovie);
     }
@@ -69,6 +86,11 @@ public class MovieController : ControllerBase
         var userId = int.Parse(userIdString);
 
         var movies = await _movieService.GetMyMoviesAsync(userId, queryParameters);
+
+        foreach (var movie in movies.Data)
+        {
+            movie.Links = CreateLinksForMovie(movie.Id);
+        }
 
         return Ok(movies);
     }
@@ -85,6 +107,8 @@ public class MovieController : ControllerBase
         var userId = int.Parse(userIdString);
 
         var movie = await _movieService.AddMovieAsync(movieDto, userId, userName);
+
+        movie.Links = CreateLinksForMovie(movie.Id);
 
         return Ok(movie);
     }
