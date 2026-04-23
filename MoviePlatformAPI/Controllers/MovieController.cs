@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviePlatformAPI.DTOs;
-using MoviePlatformAPI.Models;
 using MoviePlatformAPI.Services;
 
 namespace MoviePlatformAPI.Controllers;
@@ -20,11 +19,12 @@ public class MovieController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MovieResponseDto>>> GetMovies()
+    public async Task<ActionResult<PagedResponseDto<MovieResponseDto>>> GetMovies([FromQuery] MovieQueryParametersDto queryParameters)
     {
-        var movies = await _movieService.GetAllMoviesAsync();
+        var movies = await _movieService.GetAllMoviesAsync(queryParameters);
         return Ok(movies);
     }
+
     [HttpDelete("{id}")]
     public async Task<ActionResult<bool>> DeleteMovie(int id)
     {
@@ -41,6 +41,7 @@ public class MovieController : ControllerBase
 
         return Ok("Film successfully deleted");
     }
+
     [HttpPut("{id}")]
     public async Task<ActionResult<MovieResponseDto>> UpdateMovie(int id, MovieCreateDto movieDto)
     {
@@ -59,7 +60,7 @@ public class MovieController : ControllerBase
     }
 
     [HttpGet("my-movies")]
-    public async Task<ActionResult<IEnumerable<MovieResponseDto>>> GetMyMovies()
+    public async Task<ActionResult<PagedResponseDto<MovieResponseDto>>> GetMyMovies([FromQuery] MovieQueryParametersDto queryParameters)
     {
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userIdString == null) 
@@ -67,7 +68,7 @@ public class MovieController : ControllerBase
 
         var userId = int.Parse(userIdString);
 
-        var movies = await _movieService.GetMyMoviesAsync(userId);
+        var movies = await _movieService.GetMyMoviesAsync(userId, queryParameters);
 
         return Ok(movies);
     }
@@ -76,7 +77,6 @@ public class MovieController : ControllerBase
     public async Task<ActionResult<MovieResponseDto>> AddMovie(MovieCreateDto movieDto)
     {
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
         var userName = User.FindFirstValue(ClaimTypes.Name); 
         
         if (userIdString == null || userName == null) 
