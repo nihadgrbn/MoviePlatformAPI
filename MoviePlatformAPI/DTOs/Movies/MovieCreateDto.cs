@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace MoviePlatformAPI.DTOs;
+namespace MoviePlatformAPI.DTOs.Movies;
 
 public class MovieCreateDto
 {

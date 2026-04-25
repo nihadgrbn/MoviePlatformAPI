@@ -1,4 +1,4 @@
-namespace MoviePlatformAPI.DTOs;
+namespace MoviePlatformAPI.DTOs.Shared;
 
 public class PagedResponseDto<T>
 {

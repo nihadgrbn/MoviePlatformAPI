@@ -53,4 +53,55 @@ public class MovieControllerIntegrationTests
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
+    [Fact]
+    public async Task AddComment_WithoutToken_ReturnsUnauthorized()
+    {
+        var factory = new WebApplicationFactory<Program>();
+        var client = factory.CreateClient();
+
+        var content = new StringContent("{\"text\":\"elede yaxs deyil\"}", System.Text.Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("/api/Movie/1/comments", content);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteComment_WithoutToken_ReturnsUnauthorized()
+    {
+        var factory = new WebApplicationFactory<Program>();
+        var client = factory.CreateClient();
+
+        var response = await client.DeleteAsync("/api/Movie/comments/1");
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task AddRating_WithoutToken_ReturnsUnauthorized()
+    {
+        var factory = new WebApplicationFactory<Program>();
+        var client = factory.CreateClient();
+        var content = new StringContent("{\"score\": 5}", System.Text.Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("/api/Movie/1/ratings", content);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetComments_WithoutToken_ReturnsSuccess()
+    {
+        var factory = new WebApplicationFactory<Program>();
+        var client = factory.CreateClient();
+        var response = await client.GetAsync("/api/Movie/1/comments");
+        response.EnsureSuccessStatusCode(); 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetRatings_WithoutToken_ReturnsSuccess()
+    {
+        var factory = new WebApplicationFactory<Program>();
+        var client = factory.CreateClient();
+        var response = await client.GetAsync("/api/Movie/1/ratings");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
 }

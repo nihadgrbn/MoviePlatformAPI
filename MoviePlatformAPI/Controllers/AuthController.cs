@@ -1,7 +1,7 @@
 using System.Security.Claims; 
 using Microsoft.AspNetCore.Authorization; 
 using Microsoft.AspNetCore.Mvc;
-using MoviePlatformAPI.DTOs;
+using MoviePlatformAPI.DTOs.Auth;
 using MoviePlatformAPI.Services;
 
 namespace MoviePlatformAPI.Controllers;

@@ -11,10 +11,31 @@
   <component name="ChangeListManager">
     <list default="true" id="a067869c-4302-4c45-8ba5-5d904ef66627" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MoviePlatform/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MoviePlatform/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatform.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatform.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatform.Tests/MovieControllerIntegrationTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatform.Tests/MovieControllerIntegrationTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/AuthController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/MovieController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/MovieController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/MovieResponseDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/MovieResponseDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/AuthResponseDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Auth/AuthResponseDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/LinkDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Shared/LinkDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/MovieCreateDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Movies/MovieCreateDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/MovieQueryParametersDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Movies/MovieQueryParametersDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/MovieResponseDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Movies/MovieResponseDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/PagedResponseDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Shared/PagedResponseDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/RefreshTokenDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Auth/RefreshTokenDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/UserLoginDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Auth/UserLoginDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/UserRegisterDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Auth/UserRegisterDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Data/AppDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Data/AppDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Middlewares/ExceptionHandlingMiddleware.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Middlewares/ExceptionHandlingMiddleware.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Models/Movie.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Models/Movie.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Models/User.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/AuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/AuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/IAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/IAuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/IMovieService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/IMovieService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/MovieService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/MovieService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Validators/MovieCreateDtoValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Validators/MovieCreateDtoValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Validators/UserLoginDtoValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Validators/UserLoginDtoValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Validators/UserRegisterDtoValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Validators/UserRegisterDtoValidator.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,42 +54,47 @@
     &quot;assignee&quot;: &quot;nihadgrbn&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/nihadgrbn/MoviePlatformAPI.git",
-    "accountId": "dac2fc1a-bf8b-4ba3-ab3a-37c3e2052d6f"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/nihadgrbn/MoviePlatformAPI.git&quot;,
+    &quot;accountId&quot;: &quot;dac2fc1a-bf8b-4ba3-ab3a-37c3e2052d6f&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/48f7bf031b2942d3831d66d46fe3bc99b2e200/3b/0c26ee0d/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.microsoft/usersecrets/d0ebdd4a-bd35-41a7-b343-91bfcb9c4800/secrets.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatform.Tests/MovieControllerIntegrationTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Controllers/AuthController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Controllers/CommentController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Controllers/MovieController.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/AuthResponseDto.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/LinkDto.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/MovieCreateDto.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/MovieQueryParametersDto.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/MovieResponseDto.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/PagedResponseDto.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/RefreshTokenDto.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/UserLoginDto.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/UserRegisterDto.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Controllers/RatingController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Data/AppDbContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Data/Configurations/CommentConfiguration.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Data/Configurations/MovieConfiguration.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Data/Configurations/RatingConfiguration.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Data/Configurations/UserConfiguration.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Middlewares/ExceptionHandlingMiddleware.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Models/Comment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Models/Movie.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Models/Rating.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Models/User.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/AuthService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/CommentService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/IAuthService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/ICommentService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/IMovieService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/IRatingService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/MovieService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/RatingService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/CommentCreateDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/MovieCreateDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/RatingCreateDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/UserLoginDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/UserRegisterDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="Toolset" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -78,34 +104,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.MoviePlatformAPI: IIS Express.executor": "Run",
-    ".NET Launch Settings Profile.MoviePlatformAPI: http.executor": "Run",
-    ".NET Launch Settings Profile.MoviePlatformAPI: https.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "cidr.known.project.marker": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "e99a0fcb-98b6-43e4-abe2-470bc1098156.executor": "Debug",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "vcs.Perforce",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.MoviePlatformAPI: IIS Express.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Launch Settings Profile.MoviePlatformAPI: http.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Launch Settings Profile.MoviePlatformAPI: https.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;e99a0fcb-98b6-43e4-abe2-470bc1098156.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Perforce&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.MoviePlatformAPI: http">
     <configuration name="MoviePlatformAPI: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/MoviePlatformAPI/MoviePlatformAPI.csproj" />
@@ -181,7 +207,12 @@
       <workItem from="1776753930678" duration="327000" />
       <workItem from="1776830892055" duration="9787000" />
       <workItem from="1776877045717" duration="294000" />
-      <workItem from="1776935845256" duration="6344000" />
+      <workItem from="1776935845256" duration="9466000" />
+      <workItem from="1776970716408" duration="1672000" />
+      <workItem from="1776972417794" duration="351000" />
+      <workItem from="1777031060957" duration="6917000" />
+      <workItem from="1777049309008" duration="7757000" />
+      <workItem from="1777143872358" duration="1567000" />
     </task>
     <servers />
   </component>

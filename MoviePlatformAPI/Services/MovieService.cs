@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MoviePlatformAPI.Data;
-using MoviePlatformAPI.DTOs;
+using MoviePlatformAPI.DTOs.Movies;
+using MoviePlatformAPI.DTOs.Shared;
 using MoviePlatformAPI.Models;
 
 namespace MoviePlatformAPI.Services;
@@ -100,9 +101,6 @@ public class MovieService : IMovieService
             OwnerUsername = ownerUsername 
         };
     }
-
-    
-    
     private async Task<PagedResponseDto<MovieResponseDto>> CreatePagedResponseAsync(
         IQueryable<Movie> query, 
         MovieQueryParametersDto queryParameters)

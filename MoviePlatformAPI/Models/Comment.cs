@@ -1,0 +1,17 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace MoviePlatformAPI.Models;
+
+public class Comment
+{
+    public int Id { get; set; }
+    public  string Text { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
+    
+    public int MovieId { get; set; }
+    public Movie? Movie { get; set; }
+    
+    public int UserId { get; set; }
+    public User? User { get; set; }
+}

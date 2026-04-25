@@ -27,23 +27,40 @@ public class ExceptionHandlingMiddleware
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
+    
         int statusCode = (int)HttpStatusCode.InternalServerError;
-        string message = "Internal Server Error";
-        if (exception is UnauthorizedAccessException)
+        string message = "An unexpected error occurred on the server.";
+
+        switch (exception)
         {
-            statusCode = (int)HttpStatusCode.Forbidden; 
-            message = exception.Message; 
+            case UnauthorizedAccessException:
+                statusCode = (int)HttpStatusCode.Forbidden;
+                message = exception.Message;
+                break;
+
+            case KeyNotFoundException:
+                statusCode = (int)HttpStatusCode.NotFound;
+                message = exception.Message;
+                break;
+
+            case ArgumentException:
+                statusCode = (int)HttpStatusCode.BadRequest;
+                message = exception.Message;
+                break;
+
         }
+
         context.Response.StatusCode = statusCode;
+
         var response = new
         {
             StatusCode = statusCode,
             Message = message,
             Detailed = exception.Message 
         };
+
         var jsonResponse = JsonSerializer.Serialize(response);
         return context.Response.WriteAsync(jsonResponse);
-     
     }
 
 }

@@ -1,4 +1,6 @@
-namespace MoviePlatformAPI.DTOs;
+using MoviePlatformAPI.DTOs.Shared;
+
+namespace MoviePlatformAPI.DTOs.Movies;
 
 public class MovieResponseDto
 {

@@ -1,6 +1,5 @@
 using FluentValidation;
-using FluentValidation.Validators;
-using MoviePlatformAPI.DTOs;
+using MoviePlatformAPI.DTOs.Movies;
 
 namespace MoviePlatformAPI.Validators;
 

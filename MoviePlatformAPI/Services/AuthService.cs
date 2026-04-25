@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MoviePlatformAPI.Data;
-using MoviePlatformAPI.DTOs;
+using MoviePlatformAPI.DTOs.Auth;
 using MoviePlatformAPI.Models;
 
 namespace MoviePlatformAPI.Services;

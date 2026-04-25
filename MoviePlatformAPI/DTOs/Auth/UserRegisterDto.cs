@@ -1,4 +1,4 @@
-namespace MoviePlatformAPI.DTOs;
+namespace MoviePlatformAPI.DTOs.Auth;
 
 public class UserRegisterDto
 {

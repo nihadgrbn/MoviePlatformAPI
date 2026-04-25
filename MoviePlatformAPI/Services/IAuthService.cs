@@ -1,4 +1,4 @@
-using MoviePlatformAPI.DTOs;
+using MoviePlatformAPI.DTOs.Auth;
 using MoviePlatformAPI.Models;
 
 namespace MoviePlatformAPI.Services;
