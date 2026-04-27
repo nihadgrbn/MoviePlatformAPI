@@ -1,3 +1,5 @@
+using MoviePlatformAPI.Enums;
+
 namespace MoviePlatformAPI.DTOs.Movies;
 
 public class MovieCreateDto
@@ -8,5 +10,4 @@ public class MovieCreateDto
     
     public int ReleaseYear { get; set; }
     
-    public string Genre { get; set; } = string.Empty;
-}
+    public MovieGenre Genre { get; set; }}

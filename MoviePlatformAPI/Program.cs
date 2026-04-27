@@ -1,14 +1,15 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models; 
 using MoviePlatformAPI.Data;
 using MoviePlatformAPI.Services;
-using System.Text.Json.Serialization;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MoviePlatformAPI.Middlewares;
+using MoviePlatformAPI.Services.Contracts;
 using MoviePlatformAPI.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,11 +19,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.Converters
+        .Add(new JsonStringEnumConverter());
 });
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<MovieCreateDtoValidator>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -55,6 +58,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMovieService, MovieService>(); 
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

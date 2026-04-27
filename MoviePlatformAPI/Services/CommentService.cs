@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using MoviePlatformAPI.Data;
 using MoviePlatformAPI.DTOs.Comments;
 using MoviePlatformAPI.Models;
+using MoviePlatformAPI.Services.Contracts;
+using MoviePlatformAPI.Exceptions;
 
 namespace MoviePlatformAPI.Services;
 
@@ -18,7 +20,7 @@ public class CommentService : ICommentService
     {
         var movieExists = await _context.Movies.AnyAsync(m => m.Id == movieId);
         if (!movieExists)
-            throw new KeyNotFoundException("Movie not found.");
+            throw new NotFoundException("Movie not found.");
 
         var comment = new Comment
         {
@@ -40,6 +42,33 @@ public class CommentService : ICommentService
             AuthorId = userId 
         };
     }
+    
+    public async Task<CommentResponseDto> UpdateCommentAsync(int id, CommentUpdateDto updateDto, int userId)
+    {
+        var comment = await _context.Comments
+            .Include(c => c.User)
+            .FirstOrDefaultAsync(c => c.Id == id);
+            
+        if (comment == null)
+            throw new NotFoundException("Comment not found.");
+            
+        if (comment.UserId != userId)
+        {
+            throw new UnauthorizedException("You are not authorized to update this comment.");  
+        }
+        
+        comment.Text = updateDto.Text;
+        await _context.SaveChangesAsync();
+        
+        return new CommentResponseDto
+        {
+            Id = comment.Id,
+            Text = comment.Text,
+            CreatedAt = comment.CreatedAt,
+            AuthorUsername = comment.User!.Username,
+            AuthorId = comment.UserId
+        };
+    }
 
     public async Task<List<CommentResponseDto>> GetCommentsAsync(int movieId)
     {
@@ -58,20 +87,20 @@ public class CommentService : ICommentService
             .ToListAsync();
     }
 
-    public async Task<bool> DeleteCommentAsync(int commentId, int userId)
+    public async Task DeleteCommentAsync(int commentId, int userId)
     {
         var comment = await _context.Comments.FindAsync(commentId);
         
         if (comment == null)
-            return false;
+            throw new NotFoundException("Comment not found.");
 
         if (comment.UserId != userId)
         {
-            throw new UnauthorizedAccessException("You can only delete your own comments.");
+            throw new UnauthorizedException("You can only delete your own comments.");
         }
 
         _context.Comments.Remove(comment);
         await _context.SaveChangesAsync();
-        return true;
+        
     }
 }

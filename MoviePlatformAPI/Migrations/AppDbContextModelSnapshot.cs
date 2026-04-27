@@ -66,10 +66,8 @@ namespace MoviePlatformAPI.Migrations
                         .HasMaxLength(1500)
                         .HasColumnType("character varying(1500)");
 
-                    b.Property<string>("Genre")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int>("Genre")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("integer");

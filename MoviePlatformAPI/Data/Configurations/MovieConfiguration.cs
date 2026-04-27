@@ -19,8 +19,7 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
             .HasMaxLength(1500);
 
         builder.Property(m => m.Genre)
-            .IsRequired()
-            .HasMaxLength(50);
+            .IsRequired();
 
         builder.HasOne(m => m.Owner)
             .WithMany(u => u.Movies)

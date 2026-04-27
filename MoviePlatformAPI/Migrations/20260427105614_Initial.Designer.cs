@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MoviePlatformAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260424121259_AddCommentsAndRatings")]
-    partial class AddCommentsAndRatings
+    [Migration("20260427105614_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,10 +69,8 @@ namespace MoviePlatformAPI.Migrations
                         .HasMaxLength(1500)
                         .HasColumnType("character varying(1500)");
 
-                    b.Property<string>("Genre")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int>("Genre")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("integer");
@@ -165,7 +163,7 @@ namespace MoviePlatformAPI.Migrations
                     b.HasOne("MoviePlatformAPI.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Movie");
@@ -195,7 +193,7 @@ namespace MoviePlatformAPI.Migrations
                     b.HasOne("MoviePlatformAPI.Models.User", "User")
                         .WithMany("Ratings")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Movie");

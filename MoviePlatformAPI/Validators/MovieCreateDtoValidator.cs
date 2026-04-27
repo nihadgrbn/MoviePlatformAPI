@@ -18,8 +18,9 @@ public class MovieCreateDtoValidator:AbstractValidator<MovieCreateDto>
         RuleFor(x => x.ReleaseYear)
             .NotEmpty().WithMessage("Release year is required")
             .GreaterThan(1888).WithMessage("Release year must be greater than 1888");
-        RuleFor(x => x.Genre)
-            .NotEmpty().WithMessage("Genre is required");
+        RuleFor(m => m.Genre)
+            .IsInEnum()
+            .WithMessage("Invalid genre selected. Please choose one of the available genres (e.g., Action, Comedy, Drama, etc.).");
         RuleFor(x => x.Genre)
             .NotEmpty().WithMessage("Genre must be a valid genre");
     }

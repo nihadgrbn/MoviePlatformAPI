@@ -3,6 +3,8 @@ using MoviePlatformAPI.Data;
 using MoviePlatformAPI.DTOs.Movies;
 using MoviePlatformAPI.DTOs.Shared;
 using MoviePlatformAPI.Models;
+using MoviePlatformAPI.Services.Contracts;
+using MoviePlatformAPI.Exceptions;
 
 namespace MoviePlatformAPI.Services;
 
@@ -27,25 +29,24 @@ public class MovieService : IMovieService
         return await CreatePagedResponseAsync(baseQuery, queryParameters);
     }
     
-    public async Task<MovieResponseDto?> UpdateMovieAsync(int id, MovieCreateDto movieDto, int userId)
+    public async Task<MovieResponseDto> UpdateMovieAsync(int id, MovieCreateDto movieDto, int userId)
     {
         var movie = await _context.Movies
             .Include(m => m.Owner)
             .FirstOrDefaultAsync(m => m.Id == id);
             
         if (movie == null)
-            return null;
+            throw new NotFoundException(); 
             
         if (movie.UserId != userId)
         {
-            throw new UnauthorizedAccessException("You are not authorized to update this movie.");  
+            throw new UnauthorizedException("You are not authorized to update this movie.");  
         }
         
         movie.Title = movieDto.Title;
         movie.Description = movieDto.Description;
         movie.ReleaseYear = movieDto.ReleaseYear;
         movie.Genre = movieDto.Genre;
-        
         await _context.SaveChangesAsync();
         
         return new MovieResponseDto
@@ -59,22 +60,21 @@ public class MovieService : IMovieService
         };
     }
 
-    public async Task<bool> DeleteMovieAsync(int id, int userId)
+    public async Task DeleteMovieAsync(int id, int userId)
     {
         var movie = await _context.Movies.FindAsync(id);
         
         if (movie == null)
-            return false;
+            throw new NotFoundException("Movie not found."); 
             
         if (movie.UserId != userId)
         {
-            throw new UnauthorizedAccessException("You are not authorized to delete this movie."); 
+            throw new UnauthorizedException("You are not authorized to delete this movie."); 
         }
         
         _context.Movies.Remove(movie);
         await _context.SaveChangesAsync();
-
-        return true;
+        
     }
 
     public async Task<MovieResponseDto> AddMovieAsync(MovieCreateDto movieDto, int userId, string ownerUsername)
@@ -101,13 +101,14 @@ public class MovieService : IMovieService
             OwnerUsername = ownerUsername 
         };
     }
+
     private async Task<PagedResponseDto<MovieResponseDto>> CreatePagedResponseAsync(
         IQueryable<Movie> query, 
         MovieQueryParametersDto queryParameters)
     {
-        if (!string.IsNullOrWhiteSpace(queryParameters.Genre))
+        if (queryParameters.Genre.HasValue)
         {
-            query = query.Where(m => m.Genre.ToLower() == queryParameters.Genre.ToLower());
+            query = query.Where(m => m.Genre == queryParameters.Genre.Value);
         }
 
         if (!string.IsNullOrWhiteSpace(queryParameters.SearchTerm))
@@ -116,6 +117,7 @@ public class MovieService : IMovieService
         }
 
         int totalRecords = await query.CountAsync();
+        int totalPages = (int)Math.Ceiling(totalRecords / (double)queryParameters.PageSize);
 
         if (!string.IsNullOrWhiteSpace(queryParameters.SortBy))
         {
@@ -136,7 +138,6 @@ public class MovieService : IMovieService
         {
             query = query.OrderByDescending(m => m.Id);
         }
-
         var movies = await query
             .Skip((queryParameters.PageNumber - 1) * queryParameters.PageSize)
             .Take(queryParameters.PageSize)
@@ -150,13 +151,21 @@ public class MovieService : IMovieService
                 OwnerUsername = m.Owner!.Username
             })
             .ToListAsync();
+        var meta = new PaginationMetaDto
+        {
+            TotalRecords = totalRecords,
+            TotalPages = totalPages,
+            PageNumber = queryParameters.PageNumber,
+            PageSize = queryParameters.PageSize,
+            HasNext = queryParameters.PageNumber < totalPages,
+            HasPrevious = queryParameters.PageNumber > 1
+        };
 
         return new PagedResponseDto<MovieResponseDto>
         {
             Data = movies,
-            PageNumber = queryParameters.PageNumber,
-            PageSize = queryParameters.PageSize,
-            TotalRecords = totalRecords
+            Meta = meta,
+            Links = new PaginationLinksDto() 
         };
     }
 }

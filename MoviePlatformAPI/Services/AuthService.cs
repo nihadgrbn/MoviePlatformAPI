@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using MoviePlatformAPI.Data;
 using MoviePlatformAPI.DTOs.Auth;
 using MoviePlatformAPI.Models;
+using MoviePlatformAPI.Services.Contracts;
+using MoviePlatformAPI.Exceptions; 
 
 namespace MoviePlatformAPI.Services;
 
@@ -21,10 +23,10 @@ public class AuthService : IAuthService
         _configuration = configuration;
     }
 
-    public async Task<User?> Register(UserRegisterDto request)
+    public async Task<User> Register(UserRegisterDto request)
     {
         if (await _context.Users.AnyAsync(u => u.Username == request.Username || u.Email == request.Email))
-            return null;
+            throw new BadRequestException("This email is already in use.", "EMAIL_IN_USE"); 
 
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
@@ -41,13 +43,12 @@ public class AuthService : IAuthService
         return user;
     }
 
-    public async Task<AuthResponseDto?> Login(UserLoginDto request)
+    public async Task<AuthResponseDto> Login(UserLoginDto request)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
         
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            return null;
-
+            throw new UnauthorizedException("Invalid username or password.");
         var token = CreateToken(user);
         var refreshToken = GenerateRefreshToken();
 
@@ -58,12 +59,12 @@ public class AuthService : IAuthService
         return new AuthResponseDto { Token = token, RefreshToken = refreshToken };
     }
 
-    public async Task<AuthResponseDto?> RefreshToken(string refreshToken)
+    public async Task<AuthResponseDto> RefreshToken(string refreshToken)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
 
         if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-            return null;
+            throw new UnauthorizedException("Invalid or expired refresh token."); 
 
         var newAccessToken = CreateToken(user);
         var newRefreshToken = GenerateRefreshToken();
@@ -77,7 +78,9 @@ public class AuthService : IAuthService
     public async Task<bool> Logout(int userId)
     {
         var user = await _context.Users.FindAsync(userId);
-        if (user == null) return false;
+        
+        if (user == null) 
+            throw new NotFoundException("User not found."); 
 
         user.RefreshToken = null;
         user.RefreshTokenExpiryTime = null;

@@ -1,3 +1,5 @@
+using MoviePlatformAPI.Enums;
+
 namespace MoviePlatformAPI.DTOs.Movies;
 
 public class MovieQueryParametersDto
@@ -11,7 +13,7 @@ public class MovieQueryParametersDto
         get => _pageSize;
         set => _pageSize = (value > 50) ? 50 : value;
     }
-    public string? Genre { get; set; } 
+    public MovieGenre? Genre { get; set; }
     public string? SearchTerm { get; set; } 
     
     public string? SortBy { get; set; } 

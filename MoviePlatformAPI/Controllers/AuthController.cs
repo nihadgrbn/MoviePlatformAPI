@@ -1,8 +1,7 @@
-using System.Security.Claims; 
 using Microsoft.AspNetCore.Authorization; 
 using Microsoft.AspNetCore.Mvc;
 using MoviePlatformAPI.DTOs.Auth;
-using MoviePlatformAPI.Services;
+using MoviePlatformAPI.Services.Contracts;
 
 namespace MoviePlatformAPI.Controllers;
 
@@ -11,19 +10,20 @@ namespace MoviePlatformAPI.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ICurrentUserService _currentUserService; 
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, ICurrentUserService currentUserService)
     {
         _authService = authService;
+        _currentUserService = currentUserService;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(UserRegisterDto request)
     {
-        var result = await _authService.Register(request);
-        if (result == null) 
-            return BadRequest(new { Error = "Username or email already exists." });
-            
+        
+        await _authService.Register(request);
+        
         return Ok(new { Message = "Register successful" });
     }
 
@@ -31,9 +31,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login(UserLoginDto request)
     {
         var response = await _authService.Login(request);
-        if (response == null) 
-            return BadRequest(new { Error = "Username or password is incorrect" });
-            
+        
         return Ok(response); 
     }
 
@@ -41,9 +39,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> RefreshToken(RefreshTokenDto request)
     {
         var response = await _authService.RefreshToken(request.RefreshToken);
-        if (response == null)
-            return Unauthorized(new { Error = "Invalid or expired refresh token." });
-
+        
         return Ok(response);
     }
 
@@ -51,14 +47,9 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _currentUserService.UserId;
         
-        if (!int.TryParse(userIdString, out int userId))
-            return Unauthorized(); 
-
-        var result = await _authService.Logout(userId);
-        if (!result)
-            return BadRequest(new { Error = "User not found" });
+        await _authService.Logout(userId);
 
         return Ok(new { Message = "Successfully logged out." });
     }

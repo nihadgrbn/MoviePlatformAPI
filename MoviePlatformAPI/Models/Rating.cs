@@ -1,5 +1,4 @@
 namespace MoviePlatformAPI.Models;
-using System.ComponentModel.DataAnnotations;
 
 public class Rating
 {

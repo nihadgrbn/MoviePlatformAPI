@@ -1,28 +1,30 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviePlatformAPI.DTOs.Ratings;
 using MoviePlatformAPI.DTOs.Shared;
-using MoviePlatformAPI.Services;
+using MoviePlatformAPI.Services.Contracts;
 
 namespace MoviePlatformAPI.Controllers;
 
-[Route("api/Movie")] 
+[Route("api/[controller]")]
 [ApiController]
 [Authorize]
 public class RatingController : ControllerBase
 {
     private readonly IRatingService _ratingService;
+    private readonly ICurrentUserService _currentUserService; 
 
-    public RatingController(IRatingService ratingService)
+    public RatingController(IRatingService ratingService, ICurrentUserService currentUserService)
     {
         _ratingService = ratingService;
+        _currentUserService = currentUserService;
     }
 
     [HttpPost("{movieId}/ratings")]
     public async Task<ActionResult> AddOrUpdateRating(int movieId, [FromBody] RatingCreateDto ratingDto)
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userId = _currentUserService.UserId;
+        
         await _ratingService.AddOrUpdateRatingAsync(movieId, userId, ratingDto);
         
         return Ok(new { message = "Rating submitted successfully." });

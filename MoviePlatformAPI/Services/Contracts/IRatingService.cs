@@ -1,6 +1,6 @@
 using MoviePlatformAPI.DTOs.Ratings;
 
-namespace MoviePlatformAPI.Services;
+namespace MoviePlatformAPI.Services.Contracts;
 
 public interface IRatingService
 {
