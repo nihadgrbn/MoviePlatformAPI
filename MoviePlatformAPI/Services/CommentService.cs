@@ -26,7 +26,7 @@ public class CommentService : ICommentService
         {
             MovieId = movieId,
             UserId = userId,
-            Text = commentDto.Text,
+            Text = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(commentDto.Text),
             CreatedAt = DateTime.UtcNow
         };
 
@@ -57,7 +57,7 @@ public class CommentService : ICommentService
             throw new UnauthorizedException("You are not authorized to update this comment.");
         }
 
-        comment.Text = updateDto.Text;
+        comment.Text = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(updateDto.Text);
         await _context.SaveChangesAsync();
 
         return new CommentResponseDto

@@ -16,11 +16,12 @@ public class EmailService : IEmailService
 
     public async Task SendEmailAsync(string toEmail, string subject, string body)
     {
-        var smtpServer = _config["EmailSettings:SmtpServer"];
-        var smtpPort = int.Parse(_config["EmailSettings:SmtpPort"]!);
-        var senderEmail = _config["EmailSettings:SenderEmail"];
-        var senderPassword = _config["EmailSettings:SenderPassword"];
-        var senderName = _config["EmailSettings:SenderName"];
+        var smtpServer = _config["EmailSettings:SmtpServer"] ?? throw new InvalidOperationException("SmtpServer is missing in config");
+        var smtpPortString = _config["EmailSettings:SmtpPort"];
+        var smtpPort = string.IsNullOrEmpty(smtpPortString) ? 587 : int.Parse(smtpPortString);
+        var senderEmail = _config["EmailSettings:SenderEmail"] ?? throw new InvalidOperationException("SenderEmail is missing in config");
+        var senderPassword = _config["EmailSettings:SenderPassword"] ?? throw new InvalidOperationException("SenderPassword is missing in config");
+        var senderName = _config["EmailSettings:SenderName"] ?? "MoviePlatform";
 
         var email = new MimeMessage();
         email.From.Add(new MailboxAddress(senderName, senderEmail));

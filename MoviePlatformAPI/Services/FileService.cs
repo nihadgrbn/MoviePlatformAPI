@@ -33,7 +33,7 @@ public class FileService:IFileService
         string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
         using (var fileStream = new FileStream(filePath, FileMode.Create))
-        {
+        {   
             await file.CopyToAsync(fileStream);
         }
 
@@ -44,7 +44,14 @@ public class FileService:IFileService
     {
         if (string.IsNullOrEmpty(relativePath)) return;
 
-        string fullPath = Path.Combine(_environment.WebRootPath, relativePath.TrimStart('/'));
+        string webRootPath = Path.GetFullPath(_environment.WebRootPath);
+        string fullPath = Path.GetFullPath(Path.Combine(webRootPath, relativePath.TrimStart('/')));
+
+        if (!fullPath.StartsWith(webRootPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
         if (File.Exists(fullPath))
         {
             File.Delete(fullPath);

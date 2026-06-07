@@ -41,7 +41,7 @@ public class AuthService : IAuthService
         if (user == null)
             throw new NotFoundException("User with this email was not found.", "USER_NOT_FOUND");
 
-        var otpCode = new Random().Next(100000, 999999).ToString();
+        var otpCode = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
 
         _cache.Set(cacheKey, otpCode, TimeSpan.FromMinutes(5));
 

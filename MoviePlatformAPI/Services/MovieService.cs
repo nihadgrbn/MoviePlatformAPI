@@ -125,8 +125,8 @@ public class MovieService : IMovieService
         if (!isAdmin && movie.UserId != userId)
             throw new UnauthorizedException("You are not authorized to update this movie.");
 
-        movie.Title = movieDto.Title;
-        movie.Description = movieDto.Description;
+        movie.Title = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(movieDto.Title);
+        movie.Description = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(movieDto.Description);
         movie.ReleaseYear = movieDto.ReleaseYear;
         movie.Genre = movieDto.Genre;
 
@@ -158,7 +158,7 @@ public class MovieService : IMovieService
     {
         var movie = new Movie
         {
-            Title = movieDto.Title, Description = movieDto.Description,
+            Title = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(movieDto.Title), Description = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(movieDto.Description),
             ReleaseYear = movieDto.ReleaseYear, Genre = movieDto.Genre, UserId = userId 
         };
 
