@@ -58,7 +58,6 @@ public class CommentController : ControllerBase
 
         foreach (var comment in comments)
         {
-            // Moderator və Admin bütün şərhlər üçün link görür, user yalnız öz şərhləri üçün
             if (currentUserId != 0 && (isModerator || currentUserId == comment.AuthorId))
             {
                 comment.Links = CreateLinksForComment(comment.Id);
