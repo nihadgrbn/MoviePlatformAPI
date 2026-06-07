@@ -10,4 +10,7 @@ public interface IAuthService
     Task<AuthResponseDto> RefreshToken(string refreshToken);
     Task<bool> Logout(int userId);
     
+    Task SendPasswordResetCodeAsync(string email);
+    Task ResetPasswordAsync(ResetPasswordDto request);
+    
 }

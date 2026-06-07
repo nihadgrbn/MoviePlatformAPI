@@ -1,7 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography; 
+using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MoviePlatformAPI.Data;
@@ -16,11 +17,65 @@ public class AuthService : IAuthService
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
+    private readonly IMemoryCache _cache; 
+    private readonly IEmailService _emailService;
 
-    public AuthService(AppDbContext context, IConfiguration configuration)
+    public AuthService(AppDbContext context, IConfiguration configuration, IMemoryCache cache, IEmailService emailService)
     {
         _context = context;
         _configuration = configuration;
+        _cache = cache; 
+        _emailService = emailService;
+    }
+    
+    public async Task SendPasswordResetCodeAsync(string email)
+    {
+        string cacheKey = $"ResetPassword_{email}";
+
+        if (_cache.TryGetValue(cacheKey, out string? existingCode) && !string.IsNullOrEmpty(existingCode))
+        {
+            throw new BadRequestException("A reset code has already been sent. Please wait 5 minutes before requesting a new one.", "COOLDOWN_ACTIVE");
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null)
+            throw new NotFoundException("User with this email was not found.", "USER_NOT_FOUND");
+
+        var otpCode = new Random().Next(100000, 999999).ToString();
+
+        _cache.Set(cacheKey, otpCode, TimeSpan.FromMinutes(5));
+
+        string subject = "MoviePlatform - Password Reset Code";
+        string body = $@"
+            <h2>Password Reset Request</h2>
+            <p>Your password reset code is: <strong>{otpCode}</strong></p>
+            <p>This code will expire in 5 minutes. If you didn't request this, just ignore this email.</p>";
+
+        await _emailService.SendEmailAsync(email, subject, body);
+    }
+
+    public async Task ResetPasswordAsync(ResetPasswordDto request)
+    {
+        string cacheKey = $"ResetPassword_{request.Email}";
+
+        if (!_cache.TryGetValue(cacheKey, out string? savedOtpCode) || string.IsNullOrEmpty(savedOtpCode))
+        {
+            throw new BadRequestException("OTP code has expired or is invalid.", "OTP_EXPIRED");
+        }
+
+        if (savedOtpCode != request.OtpCode)
+        {
+            throw new BadRequestException("Invalid OTP code.", "INVALID_OTP");
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        if (user == null)
+            throw new NotFoundException("User not found.", "USER_NOT_FOUND");
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        await _context.SaveChangesAsync();
+
+        _cache.Remove(cacheKey);
     }
 
     public async Task<User> Register(UserRegisterDto request)
@@ -49,6 +104,7 @@ public class AuthService : IAuthService
         
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             throw new UnauthorizedException("Invalid username or password.");
+            
         var token = CreateToken(user);
         var refreshToken = GenerateRefreshToken();
 
@@ -94,7 +150,8 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

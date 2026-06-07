@@ -43,23 +43,23 @@ public class CommentService : ICommentService
         };
     }
     
-    public async Task<CommentResponseDto> UpdateCommentAsync(int id, CommentUpdateDto updateDto, int userId)
+    public async Task<CommentResponseDto> UpdateCommentAsync(int id, CommentUpdateDto updateDto, int userId, bool isModerator)
     {
         var comment = await _context.Comments
             .Include(c => c.User)
             .FirstOrDefaultAsync(c => c.Id == id);
-            
+
         if (comment == null)
             throw new NotFoundException("Comment not found.");
-            
-        if (comment.UserId != userId)
+
+        if (!isModerator && comment.UserId != userId)
         {
-            throw new UnauthorizedException("You are not authorized to update this comment.");  
+            throw new UnauthorizedException("You are not authorized to update this comment.");
         }
-        
+
         comment.Text = updateDto.Text;
         await _context.SaveChangesAsync();
-        
+
         return new CommentResponseDto
         {
             Id = comment.Id,
@@ -73,9 +73,9 @@ public class CommentService : ICommentService
     public async Task<List<CommentResponseDto>> GetCommentsAsync(int movieId)
     {
         return await _context.Comments
-            .Include(c => c.User) 
+            .Include(c => c.User)
             .Where(c => c.MovieId == movieId)
-            .OrderBy(c => c.CreatedAt) 
+            .OrderBy(c => c.CreatedAt)
             .Select(c => new CommentResponseDto
             {
                 Id = c.Id,
@@ -87,20 +87,19 @@ public class CommentService : ICommentService
             .ToListAsync();
     }
 
-    public async Task DeleteCommentAsync(int commentId, int userId)
+    public async Task DeleteCommentAsync(int commentId, int userId, bool isModerator)
     {
         var comment = await _context.Comments.FindAsync(commentId);
-        
+
         if (comment == null)
             throw new NotFoundException("Comment not found.");
 
-        if (comment.UserId != userId)
+        if (!isModerator && comment.UserId != userId)
         {
             throw new UnauthorizedException("You can only delete your own comments.");
         }
 
         _context.Comments.Remove(comment);
         await _context.SaveChangesAsync();
-        
     }
 }

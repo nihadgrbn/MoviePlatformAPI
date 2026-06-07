@@ -10,48 +10,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a067869c-4302-4c45-8ba5-5d904ef66627" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MoviePlatform/.idea/.name" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MoviePlatform/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MoviePlatform/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatform.Tests/MovieControllerIntegrationTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatform.Tests/MovieControllerIntegrationTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatform.Tests/MoviePlatform.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatform.Tests/MoviePlatform.Tests.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatform.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatform.sln.DotSettings.user" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/AuthController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/CommentController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/CommentController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/MovieController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/MovieController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/RatingController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Controllers/RatingController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Comments/CommentResponseDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Comments/CommentResponseDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Movies/MovieCreateDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Movies/MovieCreateDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Movies/MovieQueryParametersDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Movies/MovieQueryParametersDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Movies/MovieResponseDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Movies/MovieResponseDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Shared/PagedResponseDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/DTOs/Shared/PagedResponseDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Data/Configurations/MovieConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Data/Configurations/MovieConfiguration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Middlewares/ExceptionHandlingMiddleware.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Middlewares/ExceptionHandlingMiddleware.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260331192916_InitialCreate.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260331192916_InitialCreate.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260422041208_AddRefreshToken.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260422041208_AddRefreshToken.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260422045833_UpdateStringLengths.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260422045833_UpdateStringLengths.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260422050127_OptimizeStringLengths.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260422050127_OptimizeStringLengths.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260424121259_AddCommentsAndRatings.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260424121259_AddCommentsAndRatings.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260425192334_Test.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/20260425192334_Test.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Models/Comment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Models/Comment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Models/Movie.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Models/Movie.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Models/Rating.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Models/Rating.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Models/User.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/MoviePlatformAPI.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/MoviePlatformAPI.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/AuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/AuthService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/CommentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/CommentService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/IAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IAuthService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/ICommentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/ICommentService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/IMovieService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IMovieService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/IRatingService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IRatingService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IAuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/ICommentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/ICommentService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/ICurrentUserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/ICurrentUserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IMovieService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IMovieService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/CurrentUserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/CurrentUserService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/MovieService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/MovieService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Services/RatingService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Services/RatingService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Validators/CommentCreateDtoValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Validators/CommentCreateDtoValidator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Validators/MovieCreateDtoValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Validators/MovieCreateDtoValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/Validators/UserRegisterDtoValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/Validators/UserRegisterDtoValidator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MoviePlatformAPI/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/MoviePlatformAPI/appsettings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -80,10 +59,13 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$USER_HOME$/AppData/Roaming/Microsoft/UserSecrets/d0ebdd4a-bd35-41a7-b343-91bfcb9c4800/secrets.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatform.Tests/MovieControllerIntegrationTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatform.Tests/Services/RatingServiceTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Controllers/AuthController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Controllers/CommentController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Controllers/MovieController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Controllers/RatingController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/Auth/ForgotPasswordDto.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/Auth/ResetPasswordDto.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/Comments/CommentUpdateDto.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/Shared/PaginationLinksDto.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/DTOs/Shared/PaginationMetaDto.cs" root0="FORCE_HIGHLIGHTING" />
@@ -106,14 +88,18 @@
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IAuthService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/ICommentService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/ICurrentUserService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IEmailService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IMovieService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/Contracts/IRatingService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/CurrentUserService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/EmailService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/MovieService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Services/RatingService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/CommentCreateDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/ForgotPasswordDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/MovieCreateDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/RatingCreateDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/ResetPasswordDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/UserLoginDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MoviePlatformAPI/Validators/UserRegisterDtoValidator.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -152,7 +138,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Perforce&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -239,7 +225,13 @@
       <workItem from="1777049309008" duration="7757000" />
       <workItem from="1777143872358" duration="1567000" />
       <workItem from="1777227307946" duration="7644000" />
-      <workItem from="1777285902059" duration="12313000" />
+      <workItem from="1777285902059" duration="16454000" />
+      <workItem from="1777373714667" duration="3904000" />
+      <workItem from="1777406947881" duration="5115000" />
+      <workItem from="1777452113545" duration="3518000" />
+      <workItem from="1780389368366" duration="1652000" />
+      <workItem from="1780411498249" duration="344000" />
+      <workItem from="1780832026953" duration="3861000" />
     </task>
     <servers />
   </component>

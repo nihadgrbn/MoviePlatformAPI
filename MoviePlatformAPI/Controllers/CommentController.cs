@@ -39,41 +39,46 @@ public class CommentController : ControllerBase
     public async Task<ActionResult<CommentResponseDto>> UpdateComment(int id, [FromBody] CommentUpdateDto updateDto)
     {
         var userId = _currentUserService.UserId;
-    
-        var updatedComment = await _commentService.UpdateCommentAsync(id, updateDto, userId);
+        var isModerator = _currentUserService.IsModerator;
+
+        var updatedComment = await _commentService.UpdateCommentAsync(id, updateDto, userId, isModerator);
 
         updatedComment.Links = CreateLinksForComment(updatedComment.Id);
-    
+
         return Ok(updatedComment);
     }
     [HttpGet("{movieId}/comments", Name = "GetComments")]
-    [AllowAnonymous] 
+    [AllowAnonymous]
     public async Task<ActionResult<List<CommentResponseDto>>> GetComments(int movieId)
     {
         var comments = await _commentService.GetCommentsAsync(movieId);
-    
+
         var currentUserId = _currentUserService.UserId;
+        var isModerator = _currentUserService.IsModerator;
 
         foreach (var comment in comments)
         {
-            if (currentUserId != 0 && currentUserId == comment.AuthorId)
+            // Moderator və Admin bütün şərhlər üçün link görür, user yalnız öz şərhləri üçün
+            if (currentUserId != 0 && (isModerator || currentUserId == comment.AuthorId))
             {
-                comment.Links = CreateLinksForComment(comment.Id); 
+                comment.Links = CreateLinksForComment(comment.Id);
             }
             else
             {
-                comment.Links = null; 
+                comment.Links = null;
             }
         }
 
         return Ok(comments);
     }
-    [HttpDelete("{id}", Name = "DeleteComment")] 
-    public async Task<ActionResult> DeleteComment(int id) 
+    [HttpDelete("{id}", Name = "DeleteComment")]
+    public async Task<ActionResult> DeleteComment(int id)
     {
         var userId = _currentUserService.UserId;
-        await _commentService.DeleteCommentAsync(id, userId); 
-        return NoContent(); 
+        var isModerator = _currentUserService.IsModerator;
+
+        await _commentService.DeleteCommentAsync(id, userId, isModerator);
+        return NoContent();
     }
 
 }

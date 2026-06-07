@@ -135,8 +135,9 @@ public class MovieController : ControllerBase
     public async Task<ActionResult<MovieResponseDto>> UpdateMovie(int id, MovieCreateDto movieDto)
     {
         var userId = _currentUserService.UserId;
-    
-        var updatedMovie = await _movieService.UpdateMovieAsync(id, movieDto, userId);
+        var isAdmin = _currentUserService.IsAdmin;
+
+        var updatedMovie = await _movieService.UpdateMovieAsync(id, movieDto, userId, isAdmin);
 
         updatedMovie.Links = CreateLinksForMovie(updatedMovie.Id);
         return Ok(updatedMovie);
@@ -146,8 +147,9 @@ public class MovieController : ControllerBase
     public async Task<ActionResult> DeleteMovie(int id)
     {
         var userId = _currentUserService.UserId;
-    
-        await _movieService.DeleteMovieAsync(id, userId);
+        var isAdmin = _currentUserService.IsAdmin;
+
+        await _movieService.DeleteMovieAsync(id, userId, isAdmin);
 
         return Ok(new { message = "Film successfully deleted" });
     }

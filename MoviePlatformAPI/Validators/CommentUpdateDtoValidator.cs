@@ -3,9 +3,9 @@ using MoviePlatformAPI.DTOs.Comments;
 
 namespace MoviePlatformAPI.Validators;
 
-public class CommentCreateDtoValidator : AbstractValidator<CommentCreateDto>
+public class CommentUpdateDtoValidator : AbstractValidator<CommentUpdateDto>
 {
-    public CommentCreateDtoValidator()
+    public CommentUpdateDtoValidator()
     {
         RuleFor(x => x.Text)
             .NotEmpty().WithMessage("Comment text cannot be empty.")
