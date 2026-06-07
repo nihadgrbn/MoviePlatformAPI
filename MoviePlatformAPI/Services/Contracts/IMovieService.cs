@@ -10,4 +10,6 @@ public interface IMovieService
     Task<MovieResponseDto> AddMovieAsync(MovieCreateDto movieDto, int userId, string ownerUsername);
     Task<MovieResponseDto> UpdateMovieAsync(int id, MovieCreateDto movieDto, int userId, bool isAdmin);
     Task DeleteMovieAsync(int id, int userId, bool isAdmin);
+    Task<MovieResponseDto> UploadPosterAsync(int movieId, IFormFile file, int userId, bool isAdmin);
+    Task DeletePosterAsync(int movieId, int userId, bool isAdmin);
 }

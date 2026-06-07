@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoviePlatformAPI.DTOs.Movies;
 using MoviePlatformAPI.DTOs.Shared;
@@ -26,6 +27,7 @@ public class MovieController : ControllerBase
         {
             new LinkDto(Url.Link("UpdateMovie", new { id })!, "update", "PUT"),
             new LinkDto(Url.Link("DeleteMovie", new { id })!, "delete", "DELETE")
+            
         };
     }
     
@@ -152,5 +154,29 @@ public class MovieController : ControllerBase
         await _movieService.DeleteMovieAsync(id, userId, isAdmin);
 
         return Ok(new { message = "Film successfully deleted" });
+    }
+    
+    [HttpPost("{id}/poster")]
+    [Consumes("multipart/form-data")] 
+    public async Task<ActionResult<MovieResponseDto>> UploadPoster(int id, IFormFile file) 
+    {
+        var userId = _currentUserService.UserId; 
+        var isAdmin = _currentUserService.IsAdmin; 
+
+        var result = await _movieService.UploadPosterAsync(id, file, userId, isAdmin);
+        
+        result.Links = CreateLinksForMovie(result.Id);
+    
+        return Ok(result); 
+    }
+    [HttpDelete("{id}/poster")]
+    public async Task<ActionResult> DeletePoster(int id)
+    {
+        var userId = _currentUserService.UserId;
+        var isAdmin = _currentUserService.IsAdmin;
+    
+        await _movieService.DeletePosterAsync(id, userId, isAdmin);
+    
+        return Ok(new { message = "Poster deleted successfully" });
     }
 }

@@ -12,4 +12,5 @@ public class MovieResponseDto
     public MovieGenre Genre { get; set; }    
     public string OwnerUsername { get; set; } = string.Empty;
     public List<LinkDto>? Links { get; set; } = new List<LinkDto>();
+    public string? PosterPath { get; set; }
 }

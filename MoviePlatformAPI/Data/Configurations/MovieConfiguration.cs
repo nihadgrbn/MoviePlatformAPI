@@ -25,5 +25,8 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
             .WithMany(u => u.Movies)
             .HasForeignKey(m => m.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.Property(m => m.PosterPath)
+            .HasMaxLength(1024) 
+            .IsRequired(false); 
     }
 }

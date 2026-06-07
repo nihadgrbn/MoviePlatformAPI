@@ -14,14 +14,17 @@ public class MovieService : IMovieService
     private readonly AppDbContext _context;
     private readonly IMemoryCache _memoryCache; 
     private readonly ILogger<MovieService> _logger; 
+    private readonly IFileService _fileService;
 
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-    public MovieService(AppDbContext context, IMemoryCache memoryCache, ILogger<MovieService> logger)
+    public MovieService(AppDbContext context, IMemoryCache memoryCache, ILogger<MovieService> logger, IFileService fileService)
     {
         _context = context;
         _memoryCache = memoryCache;
         _logger = logger;
+        _fileService = fileService;
+        
     }
 
     private string GetMovieCacheVersion()
@@ -183,6 +186,58 @@ public class MovieService : IMovieService
             .Replace("/", "_")
             .TrimEnd('=');
     }
+    public async Task<MovieResponseDto> UploadPosterAsync(int movieId, IFormFile file, int userId, bool isAdmin)
+    {
+        var movie = await _context.Movies.Include(m => m.Owner).FirstOrDefaultAsync(m => m.Id == movieId);
+
+        if (movie == null) throw new NotFoundException("Movie not found.");
+
+        if (!isAdmin && movie.UserId != userId)
+            throw new UnauthorizedException("You are not authorized to upload poster for this movie.");
+
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+
+        string posterUrl = await _fileService.SaveFileAsync(file, allowedExtensions);
+
+        if (!string.IsNullOrEmpty(movie.PosterPath))
+        {
+            _fileService.DeleteFile(movie.PosterPath);
+        }
+
+        movie.PosterPath = posterUrl;
+        await _context.SaveChangesAsync();
+
+        InvalidateMovieCache();
+
+        return new MovieResponseDto
+        {
+            Id = movie.Id, 
+            Title = movie.Title, 
+            Description = movie.Description,
+            ReleaseYear = movie.ReleaseYear, 
+            Genre = movie.Genre, 
+            OwnerUsername = movie.Owner!.Username,
+            PosterPath = movie.PosterPath,
+           
+            Links = null 
+        };
+    }
+    public async Task DeletePosterAsync(int movieId, int userId, bool isAdmin)
+    {
+        var movie = await _context.Movies.FindAsync(movieId);
+        if (movie == null) throw new NotFoundException("Movie not found.");
+
+        if (!isAdmin && movie.UserId != userId)
+            throw new UnauthorizedException("Not authorized.");
+
+        if (!string.IsNullOrEmpty(movie.PosterPath))
+        {
+            _fileService.DeleteFile(movie.PosterPath); 
+            movie.PosterPath = null; 
+            await _context.SaveChangesAsync();
+            InvalidateMovieCache();
+        }
+    }
 
     private async Task<PagedResponseDto<MovieResponseDto>> CreatePagedResponseAsync(IQueryable<Movie> query, MovieQueryParametersDto queryParameters)
     {
@@ -214,8 +269,14 @@ public class MovieService : IMovieService
             .Take(queryParameters.PageSize)
             .Select(m => new MovieResponseDto 
             {
-                Id = m.Id, Title = m.Title, Description = m.Description,
-                ReleaseYear = m.ReleaseYear, Genre = m.Genre, OwnerUsername = m.Owner!.Username
+                Id = m.Id, 
+                Title = m.Title, 
+                Description = m.Description,
+                ReleaseYear = m.ReleaseYear, 
+                Genre = m.Genre, 
+                OwnerUsername = m.Owner!.Username,
+                // 🚀 BUDUR ÇATIŞMAYAN SƏTİR:
+                PosterPath = m.PosterPath 
             }).ToListAsync();
             
         var meta = new PaginationMetaDto

@@ -13,4 +13,5 @@ public class Movie
     public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     public int UserId { get; set; }
     public User? Owner { get; set; } 
+    public string? PosterPath { get; set; }
 }
