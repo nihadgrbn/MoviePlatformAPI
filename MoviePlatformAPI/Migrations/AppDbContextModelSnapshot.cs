@@ -110,9 +110,9 @@ namespace MoviePlatformAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MovieId");
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("UserId", "MovieId")
+                    b.HasIndex("MovieId", "UserId")
                         .IsUnique();
 
                     b.ToTable("Ratings");

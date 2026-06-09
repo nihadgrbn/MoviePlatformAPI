@@ -10,7 +10,7 @@ public class RatingConfiguration : IEntityTypeConfiguration<Rating>
     {
         builder.HasKey(r => r.Id);
 
-        builder.HasIndex(r => new { r.UserId, r.MovieId })
+        builder.HasIndex(r => new { r.MovieId, r.UserId })
             .IsUnique();
 
         builder.Property(r => r.Score)

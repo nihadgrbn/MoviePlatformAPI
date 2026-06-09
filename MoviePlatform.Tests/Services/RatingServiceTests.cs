@@ -95,4 +95,16 @@ public class RatingServiceTests
         Assert.Equal(4.5, result.AverageRating);
         Assert.Equal(2, result.TotalRating);
     }
+
+    [Fact]
+    public void RatingConfiguration_HasUniqueIndex_OnMovieIdAndUserId()
+    {
+        var context = GetInMemoryDbContext();
+
+        var ratingEntity = context.Model.FindEntityType(typeof(Rating));
+        var uniqueIndex = ratingEntity?.GetIndexes().SingleOrDefault(i => i.IsUnique);
+
+        Assert.NotNull(uniqueIndex);
+        Assert.Equal(new[] { nameof(Rating.MovieId), nameof(Rating.UserId) }, uniqueIndex!.Properties.Select(p => p.Name).ToArray());
+    }
 }

@@ -72,10 +72,15 @@ public class CommentService : ICommentService
 
     public async Task<List<CommentResponseDto>> GetCommentsAsync(int movieId)
     {
+        var movieExists = await _context.Movies.AnyAsync(m => m.Id == movieId);
+        if (!movieExists)
+            throw new NotFoundException("Movie not found.");
+
         return await _context.Comments
             .Include(c => c.User)
             .Where(c => c.MovieId == movieId)
             .OrderBy(c => c.CreatedAt)
+            .ThenBy(c => c.Id)
             .Select(c => new CommentResponseDto
             {
                 Id = c.Id,

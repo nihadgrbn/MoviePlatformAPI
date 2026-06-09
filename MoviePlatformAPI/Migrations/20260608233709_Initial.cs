@@ -21,6 +21,7 @@ namespace MoviePlatformAPI.Migrations
                     Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     PasswordHash = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false),
                     RefreshToken = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -39,7 +40,8 @@ namespace MoviePlatformAPI.Migrations
                     Description = table.Column<string>(type: "character varying(1500)", maxLength: 1500, nullable: false),
                     ReleaseYear = table.Column<int>(type: "integer", nullable: false),
                     Genre = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    PosterPath = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -123,15 +125,15 @@ namespace MoviePlatformAPI.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ratings_MovieId",
+                name: "IX_Ratings_MovieId_UserId",
                 table: "Ratings",
-                column: "MovieId");
+                columns: new[] { "MovieId", "UserId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ratings_UserId_MovieId",
+                name: "IX_Ratings_UserId",
                 table: "Ratings",
-                columns: new[] { "UserId", "MovieId" },
-                unique: true);
+                column: "UserId");
         }
 
         /// <inheritdoc />

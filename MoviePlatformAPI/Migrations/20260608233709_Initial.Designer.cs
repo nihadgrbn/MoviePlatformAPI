@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MoviePlatformAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260607120440_AddUserRoleColumn")]
-    partial class AddUserRoleColumn
+    [Migration("20260608233709_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,6 +72,10 @@ namespace MoviePlatformAPI.Migrations
                     b.Property<int>("Genre")
                         .HasColumnType("integer");
 
+                    b.Property<string>("PosterPath")
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
+
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("integer");
 
@@ -109,9 +113,9 @@ namespace MoviePlatformAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MovieId");
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("UserId", "MovieId")
+                    b.HasIndex("MovieId", "UserId")
                         .IsUnique();
 
                     b.ToTable("Ratings");
