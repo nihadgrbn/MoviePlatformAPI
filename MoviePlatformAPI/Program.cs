@@ -1,16 +1,20 @@
-using System.Text;
-using System.Text.Json.Serialization;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models; 
 using MoviePlatformAPI.Data;
-using MoviePlatformAPI.Services;
-using FluentValidation;
-using FluentValidation.AspNetCore;
+using MoviePlatformAPI.Mapping;
 using MoviePlatformAPI.Middlewares;
+using MoviePlatformAPI.Services;
 using MoviePlatformAPI.Services.Contracts;
 using MoviePlatformAPI.Validators;
+using System.Reflection;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,7 +88,10 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("ModeratorOrAbove", policy =>
         policy.RequireRole("Moderator", "Admin"));
 });
-
+var config = TypeAdapterConfig.GlobalSettings;
+config.Scan(typeof(MapsterConfig).Assembly);
+builder.Services.AddSingleton(config);
+builder.Services.AddScoped<IMapper, ServiceMapper>();
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

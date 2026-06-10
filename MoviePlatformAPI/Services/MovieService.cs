@@ -6,6 +6,7 @@ using MoviePlatformAPI.DTOs.Shared;
 using MoviePlatformAPI.Models;
 using MoviePlatformAPI.Services.Contracts;
 using MoviePlatformAPI.Exceptions;
+using Mapster;
 
 namespace MoviePlatformAPI.Services;
 
@@ -133,11 +134,7 @@ public class MovieService : IMovieService
         await _context.SaveChangesAsync();
         InvalidateMovieCache();
 
-        return new MovieResponseDto
-        {
-            Id = movie.Id, Title = movie.Title, Description = movie.Description,
-            ReleaseYear = movie.ReleaseYear, Genre = movie.Genre, OwnerUsername = movie.Owner!.Username
-        };
+        return  movie.Adapt<MovieResponseDto>();
     }
 
     public async Task DeleteMovieAsync(int id, int userId, bool isAdmin)
@@ -156,21 +153,16 @@ public class MovieService : IMovieService
 
     public async Task<MovieResponseDto> AddMovieAsync(MovieCreateDto movieDto, int userId, string ownerUsername)
     {
-        var movie = new Movie
-        {
-            Title = movieDto.Title, Description = movieDto.Description,
-            ReleaseYear = movieDto.ReleaseYear, Genre = movieDto.Genre, UserId = userId 
-        };
+        var movie = movieDto.Adapt<Movie>();
+        movie.UserId = userId;
 
         _context.Movies.Add(movie);
         await _context.SaveChangesAsync(); 
-        InvalidateMovieCache(); 
+        InvalidateMovieCache();
 
-        return new MovieResponseDto
-        {
-            Id = movie.Id, Title = movie.Title, Description = movie.Description,
-            ReleaseYear = movie.ReleaseYear, Genre = movie.Genre, OwnerUsername = ownerUsername 
-        };
+        var response = movie.Adapt<MovieResponseDto>();
+        response.OwnerUsername = ownerUsername;
+        return response;
     }
     
     private static string GenerateSearchHash(string? searchTerm)
@@ -209,18 +201,7 @@ public class MovieService : IMovieService
 
         InvalidateMovieCache();
 
-        return new MovieResponseDto
-        {
-            Id = movie.Id, 
-            Title = movie.Title, 
-            Description = movie.Description,
-            ReleaseYear = movie.ReleaseYear, 
-            Genre = movie.Genre, 
-            OwnerUsername = movie.Owner!.Username,
-            PosterPath = movie.PosterPath,
-           
-            Links = null 
-        };
+        return movie.Adapt<MovieResponseDto>();
     }
     public async Task DeletePosterAsync(int movieId, int userId, bool isAdmin)
     {
@@ -263,21 +244,13 @@ public class MovieService : IMovieService
         {
             query = query.OrderByDescending(m => m.Id);
         }
-        
+
         var movies = await query
             .Skip((queryParameters.PageNumber - 1) * queryParameters.PageSize)
             .Take(queryParameters.PageSize)
-            .Select(m => new MovieResponseDto 
-            {
-                Id = m.Id, 
-                Title = m.Title, 
-                Description = m.Description,
-                ReleaseYear = m.ReleaseYear, 
-                Genre = m.Genre, 
-                OwnerUsername = m.Owner!.Username,
-                PosterPath = m.PosterPath 
-            }).ToListAsync();
-            
+            .ProjectToType<MovieResponseDto>() 
+            .ToListAsync();
+
         var meta = new PaginationMetaDto
         {
             TotalRecords = totalRecords, TotalPages = totalPages,
