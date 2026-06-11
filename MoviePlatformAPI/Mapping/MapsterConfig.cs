@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using MoviePlatformAPI.DTOs.Comments;
 using MoviePlatformAPI.DTOs.Movies;
 using MoviePlatformAPI.Models;
 
@@ -12,5 +13,8 @@ public class MapsterConfig : IRegister
             .Map(dest => dest.OwnerUsername, src => src.Owner != null ? src.Owner.Username : string.Empty);
 
         config.NewConfig<MovieCreateDto, Movie>();
+        config.NewConfig<Comment, CommentResponseDto>()
+            .Map(dest => dest.AuthorId, src => src.UserId)
+            .Map(dest => dest.AuthorUsername, src => src.User != null ? src.User.Username : string.Empty);
     }
 }

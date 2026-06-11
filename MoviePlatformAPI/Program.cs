@@ -88,11 +88,26 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("ModeratorOrAbove", policy =>
         policy.RequireRole("Moderator", "Admin"));
 });
+
+
 var config = TypeAdapterConfig.GlobalSettings;
 config.Scan(typeof(MapsterConfig).Assembly);
 builder.Services.AddSingleton(config);
 builder.Services.AddScoped<IMapper, ServiceMapper>();
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Migration error: " + ex.Message);
+    }
+}
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())

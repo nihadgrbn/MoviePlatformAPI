@@ -1,0 +1,44 @@
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: movie_postgres
+
+    environment:
+      POSTGRES_DB: MoviePlatformV2Db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 935599
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  movieplatformapi:
+    image: ${DOCKER_REGISTRY-}movieplatformapi
+
+    build:
+      context: .
+      dockerfile: MoviePlatformAPI/Dockerfile
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=MoviePlatformV2Db;Username=postgres;Password=935599
+
+    ports:
+      - "8081:8080"
+
+volumes:
+  postgres_data:

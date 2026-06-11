@@ -1,9 +1,10 @@
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using MoviePlatformAPI.Data;
 using MoviePlatformAPI.DTOs.Comments;
+using MoviePlatformAPI.Exceptions;
 using MoviePlatformAPI.Models;
 using MoviePlatformAPI.Services.Contracts;
-using MoviePlatformAPI.Exceptions;
 
 namespace MoviePlatformAPI.Services;
 
@@ -22,25 +23,17 @@ public class CommentService : ICommentService
         if (!movieExists)
             throw new NotFoundException("Movie not found.");
 
-        var comment = new Comment
-        {
-            MovieId = movieId,
-            UserId = userId,
-            Text = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(commentDto.Text),
-            CreatedAt = DateTime.UtcNow
-        };
+        var comment = commentDto.Adapt<Comment>();
+
+        comment.MovieId = movieId;
+        comment.UserId = userId;
+        comment.CreatedAt = DateTime.UtcNow;
 
         _context.Comments.Add(comment);
         await _context.SaveChangesAsync();
 
-        return new CommentResponseDto
-        {
-            Id = comment.Id,
-            Text = comment.Text,
-            CreatedAt = comment.CreatedAt,
-            AuthorUsername = username,
-            AuthorId = userId 
-        };
+        var response = comment.Adapt<CommentResponseDto>();
+        return response;
     }
     
     public async Task<CommentResponseDto> UpdateCommentAsync(int id, CommentUpdateDto updateDto, int userId, bool isModerator)
@@ -57,17 +50,10 @@ public class CommentService : ICommentService
             throw new UnauthorizedException("You are not authorized to update this comment.");
         }
 
-        comment.Text = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(updateDto.Text);
+        comment.Text = updateDto.Text;
         await _context.SaveChangesAsync();
 
-        return new CommentResponseDto
-        {
-            Id = comment.Id,
-            Text = comment.Text,
-            CreatedAt = comment.CreatedAt,
-            AuthorUsername = comment.User!.Username,
-            AuthorId = comment.UserId
-        };
+        return comment.Adapt<CommentResponseDto>();
     }
 
     public async Task<List<CommentResponseDto>> GetCommentsAsync(int movieId)
@@ -81,14 +67,7 @@ public class CommentService : ICommentService
             .Where(c => c.MovieId == movieId)
             .OrderBy(c => c.CreatedAt)
             .ThenBy(c => c.Id)
-            .Select(c => new CommentResponseDto
-            {
-                Id = c.Id,
-                Text = c.Text,
-                CreatedAt = c.CreatedAt,
-                AuthorUsername = c.User!.Username,
-                AuthorId = c.UserId
-            })
+            .ProjectToType<CommentResponseDto>()
             .ToListAsync();
     }
 
