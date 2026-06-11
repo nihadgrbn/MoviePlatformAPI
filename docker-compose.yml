@@ -39,6 +39,8 @@ services:
 
     ports:
       - "8081:8080"
+    volumes:
+      - ./MoviePlatformAPI/wwwroot/uploads:/app/wwwroot/uploads
 
 volumes:
   postgres_data:
