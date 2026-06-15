@@ -8,3 +8,6 @@ obj/
 
 riderModule.iml
 /_ReSharper.Caches/
+
+docker-compose/.env
+.env
