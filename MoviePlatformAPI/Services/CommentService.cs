@@ -22,6 +22,7 @@ public class CommentService : ICommentService
         var movieExists = await _context.Movies.AnyAsync(m => m.Id == movieId);
         if (!movieExists)
             throw new NotFoundException("Movie not found.");
+        commentDto.Text = commentDto.Text.Trim();
 
         var comment = commentDto.Adapt<Comment>();
 
@@ -50,7 +51,7 @@ public class CommentService : ICommentService
             throw new UnauthorizedException("You are not authorized to update this comment.");
         }
 
-        comment.Text = updateDto.Text;
+        comment.Text = updateDto.Text.Trim();
         await _context.SaveChangesAsync();
 
         return comment.Adapt<CommentResponseDto>();
@@ -65,8 +66,8 @@ public class CommentService : ICommentService
         return await _context.Comments
             .Include(c => c.User)
             .Where(c => c.MovieId == movieId)
-            .OrderBy(c => c.CreatedAt)
-            .ThenBy(c => c.Id)
+            .OrderByDescending(c => c.CreatedAt)
+            .ThenByDescending(c => c.Id)
             .ProjectToType<CommentResponseDto>()
             .ToListAsync();
     }

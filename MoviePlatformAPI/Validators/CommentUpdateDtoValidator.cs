@@ -8,9 +8,12 @@ public class CommentUpdateDtoValidator : AbstractValidator<CommentUpdateDto>
     public CommentUpdateDtoValidator()
     {
         RuleFor(x => x.Text)
-            .NotEmpty().WithMessage("Comment text cannot be empty.")
-            .MinimumLength(3).WithMessage("Comment must be at least 3 characters long.")
-            .MaximumLength(500).WithMessage("Comment text cannot be longer than 500 characters.")
+            .NotEmpty()
+            .WithMessage("Comment text cannot be empty.")
+            .Must(text => text.Trim().Length > 0)
+            .WithMessage("Comment must be at least 3 characters long.")
+            .Must(text => text.Trim().Length <= 500)
+            .WithMessage("Comment text cannot be longer than 500 characters.")
             .Must(text => !ContainsScriptTags(text))
             .WithMessage("HTML/Script tags are not allowed in comments.");
     }
