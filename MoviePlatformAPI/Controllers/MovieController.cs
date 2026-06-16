@@ -134,7 +134,7 @@ public class MovieController : ControllerBase
     }
 
     [HttpPut("{id}", Name = "UpdateMovie")]
-    public async Task<ActionResult<MovieResponseDto>> UpdateMovie(int id, MovieCreateDto movieDto)
+    public async Task<ActionResult<MovieResponseDto>> UpdateMovie(int id, MovieUpdateDto movieDto)
     {
         var userId = _currentUserService.UserId;
         var isAdmin = _currentUserService.IsAdmin;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoviePlatformAPI.DTOs.Comments;
 using MoviePlatformAPI.DTOs.Shared;
 using MoviePlatformAPI.Services.Contracts;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace MoviePlatformAPI.Controllers;
 
@@ -26,6 +27,8 @@ public class CommentController : ControllerBase
             new LinkDto(Url.Link("DeleteComment", new { id })!, "delete", "DELETE")
         };
     }
+    [EnableRateLimiting("comment-policy")]
+
     [HttpPost("{movieId}/comments")]
     public async Task<ActionResult<CommentResponseDto>> AddComment(int movieId, [FromBody] CommentCreateDto commentDto)
     {

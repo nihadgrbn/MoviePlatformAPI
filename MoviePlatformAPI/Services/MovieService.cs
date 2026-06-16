@@ -117,7 +117,7 @@ public class MovieService : IMovieService
         }
     }
     
-    public async Task<MovieResponseDto> UpdateMovieAsync(int id, MovieCreateDto movieDto, int userId, bool isAdmin)
+    public async Task<MovieResponseDto> UpdateMovieAsync(int id, MovieUpdateDto movieDto, int userId, bool isAdmin)
     {
         var movie = await _context.Movies.Include(m => m.Owner).FirstOrDefaultAsync(m => m.Id == id);
 
@@ -126,8 +126,8 @@ public class MovieService : IMovieService
         if (!isAdmin && movie.UserId != userId)
             throw new UnauthorizedException("You are not authorized to update this movie.");
 
-        movie.Title = movieDto.Title;
-        movie.Description = movieDto.Description;
+        movie.Title = movieDto.Title.Trim();
+        movie.Description = movieDto.Description.Trim();
         movie.ReleaseYear = movieDto.ReleaseYear;
         movie.Genre = movieDto.Genre;
 
@@ -153,6 +153,8 @@ public class MovieService : IMovieService
 
     public async Task<MovieResponseDto> AddMovieAsync(MovieCreateDto movieDto, int userId, string ownerUsername)
     {
+        movieDto.Title = movieDto.Title.Trim();
+        movieDto.Description = movieDto.Description.Trim();
         var movie = movieDto.Adapt<Movie>();
         movie.UserId = userId;
 
