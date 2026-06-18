@@ -10,4 +10,5 @@ public class CommentResponseDto
     public string AuthorUsername { get; set; } = string.Empty;
     public int AuthorId { get; set; }
     public List<LinkDto>? Links { get; set; } = new List<LinkDto>();
+    public DateTime? UpdatedAt { get; set; }
 }

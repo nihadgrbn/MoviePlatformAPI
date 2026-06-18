@@ -33,8 +33,8 @@ public class MovieCreateDtoValidator : AbstractValidator<MovieCreateDto>
             .WithMessage("Release year cannot be more than 5 years in the future.");
 
         RuleFor(x => x.Genre)
-    .Must(g => Enum.IsDefined(typeof(MovieGenre), g))
-    .WithMessage("Genre is required.");
+            .Must(g => Enum.IsDefined(typeof(MovieGenre), g))
+            .WithMessage("Genre is required.");
     }
 
     private bool ContainsScriptTags(string text)

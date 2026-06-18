@@ -17,7 +17,7 @@ public class CommentService : ICommentService
         _context = context;
     }
 
-    public async Task<CommentResponseDto> AddCommentAsync(int movieId, int userId, string username, CommentCreateDto commentDto)
+    public async Task<CommentResponseDto> AddCommentAsync(int movieId, int userId,  CommentCreateDto commentDto)
     {
         var movieExists = await _context.Movies.AnyAsync(m => m.Id == movieId);
         if (!movieExists)
@@ -52,6 +52,7 @@ public class CommentService : ICommentService
         }
 
         comment.Text = updateDto.Text.Trim();
+        comment.UpdatedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
 
         return comment.Adapt<CommentResponseDto>();

@@ -35,7 +35,7 @@ public class CommentController : ControllerBase
         var userId = _currentUserService.UserId;
         var username = _currentUserService.Username;
 
-        var comment = await _commentService.AddCommentAsync(movieId, userId, username, commentDto);
+        var comment = await _commentService.AddCommentAsync(movieId, userId, commentDto);
         return Ok(comment);
     }
     [HttpPut("{id}", Name = "UpdateComment")]
