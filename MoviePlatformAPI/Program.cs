@@ -17,6 +17,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using Elastic.Clients.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,11 @@ builder.Services.AddValidatorsFromAssemblyContaining<MovieCreateDtoValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMemoryCache();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "MoviePlatform_";
+});
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -71,13 +77,36 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "application/json";
+
+        var response = new
+        {
+            Message = "You have sent too many requests. Please wait a moment.",
+            RetryAfterSeconds = 60, 
+            Status = 429
+        };
+
+        await context.HttpContext.Response.WriteAsJsonAsync(response, token);
+    };
 
     options.AddFixedWindowLimiter("comment-policy", opt =>
     {
         opt.PermitLimit = 3;
         opt.Window = TimeSpan.FromSeconds(10);
-        opt.QueueLimit = 0;
     });
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100, 
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -101,6 +130,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("ModeratorOrAbove", policy =>
         policy.RequireRole("Moderator", "Admin"));
 });
+var elasticUri = builder.Configuration.GetConnectionString("Elasticsearch");
+var settings = new ElasticsearchClientSettings(new Uri(elasticUri!))
+    .DefaultIndex("movies"); 
+
+builder.Services.AddSingleton(new ElasticsearchClient(settings));
 
 
 var config = TypeAdapterConfig.GlobalSettings;

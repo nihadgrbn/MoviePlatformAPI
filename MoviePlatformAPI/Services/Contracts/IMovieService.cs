@@ -13,4 +13,6 @@ public interface IMovieService
     Task DeleteMovieAsync(int id, int userId, bool isAdmin);
     Task<MovieResponseDto> UploadPosterAsync(int movieId, IFormFile file, int userId, bool isAdmin);
     Task DeletePosterAsync(int movieId, int userId, bool isAdmin);
+    Task<PagedResponseDto<MovieResponseDto>> SearchMoviesAsync(MovieQueryParametersDto queryParameters);
+    Task SyncMoviesToElasticsearchAsync();
 }

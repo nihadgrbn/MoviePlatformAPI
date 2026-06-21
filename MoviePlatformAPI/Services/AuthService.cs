@@ -1,15 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory; 
+using Microsoft.IdentityModel.Tokens;
+using MoviePlatformAPI.Data;
+using MoviePlatformAPI.DTOs.Auth;
+using MoviePlatformAPI.Exceptions; 
+using MoviePlatformAPI.Models;
+using MoviePlatformAPI.Services.Contracts;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Caching.Memory; 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using MoviePlatformAPI.Data;
-using MoviePlatformAPI.DTOs.Auth;
-using MoviePlatformAPI.Models;
-using MoviePlatformAPI.Services.Contracts;
-using MoviePlatformAPI.Exceptions; 
 
 namespace MoviePlatformAPI.Services;
 
@@ -17,22 +18,23 @@ public class AuthService : IAuthService
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
-    private readonly IMemoryCache _cache; 
+    private readonly IDistributedCache _cache;
     private readonly IEmailService _emailService;
 
-    public AuthService(AppDbContext context, IConfiguration configuration, IMemoryCache cache, IEmailService emailService)
+    public AuthService(AppDbContext context, IConfiguration configuration, IDistributedCache cache, IEmailService emailService)
     {
         _context = context;
         _configuration = configuration;
         _cache = cache; 
         _emailService = emailService;
     }
-    
+
     public async Task SendPasswordResetCodeAsync(string email)
     {
         string cacheKey = $"ResetPassword_{email}";
 
-        if (_cache.TryGetValue(cacheKey, out string? existingCode) && !string.IsNullOrEmpty(existingCode))
+        var existingCode = await _cache.GetStringAsync(cacheKey);
+        if (!string.IsNullOrEmpty(existingCode))
         {
             throw new BadRequestException("A reset code has already been sent. Please wait 5 minutes before requesting a new one.", "COOLDOWN_ACTIVE");
         }
@@ -43,13 +45,17 @@ public class AuthService : IAuthService
 
         var otpCode = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
 
-        _cache.Set(cacheKey, otpCode, TimeSpan.FromMinutes(5));
+        var cacheOptions = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+        };
+        await _cache.SetStringAsync(cacheKey, otpCode, cacheOptions);
 
         string subject = "MoviePlatform - Password Reset Code";
         string body = $@"
-            <h2>Password Reset Request</h2>
-            <p>Your password reset code is: <strong>{otpCode}</strong></p>
-            <p>This code will expire in 5 minutes. If you didn't request this, just ignore this email.</p>";
+        <h2>Password Reset Request</h2>
+        <p>Your password reset code is: <strong>{otpCode}</strong></p>
+        <p>This code will expire in 5 minutes. If you didn't request this, just ignore this email.</p>";
 
         await _emailService.SendEmailAsync(email, subject, body);
     }
@@ -58,7 +64,9 @@ public class AuthService : IAuthService
     {
         string cacheKey = $"ResetPassword_{request.Email}";
 
-        if (!_cache.TryGetValue(cacheKey, out string? savedOtpCode) || string.IsNullOrEmpty(savedOtpCode))
+        var savedOtpCode = await _cache.GetStringAsync(cacheKey);
+
+        if (string.IsNullOrEmpty(savedOtpCode))
         {
             throw new BadRequestException("OTP code has expired or is invalid.", "OTP_EXPIRED");
         }
@@ -75,7 +83,7 @@ public class AuthService : IAuthService
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
         await _context.SaveChangesAsync();
 
-        _cache.Remove(cacheKey);
+        await _cache.RemoveAsync(cacheKey);
     }
 
     public async Task<User> Register(UserRegisterDto request)

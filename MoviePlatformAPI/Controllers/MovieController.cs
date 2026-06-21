@@ -78,20 +78,36 @@ public class MovieController : ControllerBase
 
         return Ok(genres);
     }
+    [HttpPost("sync-elasticsearch")]
+    [AllowAnonymous] 
+    public async Task<IActionResult> SyncToElasticsearch()
+    {
+        await _movieService.SyncMoviesToElasticsearchAsync();
+        return Ok(new { message = "All movies synced to Elasticsearch successfully!" });
+    }
 
     [HttpGet]
     [AllowAnonymous]
     public async Task<ActionResult<PagedResponseDto<MovieResponseDto>>> GetMovies([FromQuery] MovieQueryParametersDto queryParameters)
     {
-        var movies = await _movieService.GetAllMoviesAsync(queryParameters);
-        
+        PagedResponseDto<MovieResponseDto> movies;
+
+        if (!string.IsNullOrWhiteSpace(queryParameters.SearchTerm))
+        {
+            movies = await _movieService.SearchMoviesAsync(queryParameters);
+        }
+        else
+        {
+            movies = await _movieService.GetAllMoviesAsync(queryParameters);
+        }
+
         var currentUserName = _currentUserService.Username;
 
         foreach (var movie in movies.Data)
         {
             if (!string.IsNullOrEmpty(currentUserName) && movie.OwnerUsername == currentUserName)
             {
-                movie.Links = CreateLinksForMovie(movie.Id); 
+                movie.Links = CreateLinksForMovie(movie.Id);
             }
             else
             {

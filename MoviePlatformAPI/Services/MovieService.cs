@@ -1,76 +1,87 @@
+using Elastic.Clients.Elasticsearch;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory; 
+using Microsoft.Extensions.Caching.Distributed;
 using MoviePlatformAPI.Data;
 using MoviePlatformAPI.DTOs.Movies;
 using MoviePlatformAPI.DTOs.Shared;
+using MoviePlatformAPI.Exceptions;
 using MoviePlatformAPI.Models;
 using MoviePlatformAPI.Services.Contracts;
-using MoviePlatformAPI.Exceptions;
-using Mapster;
+using System.Text.Json;
 
 namespace MoviePlatformAPI.Services;
 
 public class MovieService : IMovieService
 {
     private readonly AppDbContext _context;
-    private readonly IMemoryCache _memoryCache; 
-    private readonly ILogger<MovieService> _logger; 
+    private readonly IDistributedCache _cache;
+    private readonly ILogger<MovieService> _logger;
     private readonly IFileService _fileService;
+    private readonly ElasticsearchClient _elasticClient;
 
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-    public MovieService(AppDbContext context, IMemoryCache memoryCache, ILogger<MovieService> logger, IFileService fileService)
+    public MovieService(AppDbContext context, IDistributedCache cache, ILogger<MovieService> logger, IFileService fileService, ElasticsearchClient elasticClient)
     {
         _context = context;
-        _memoryCache = memoryCache;
+        _cache = cache;
         _logger = logger;
         _fileService = fileService;
-        
+        _elasticClient = elasticClient;
     }
 
-    private string GetMovieCacheVersion()
+    private async Task<string> GetMovieCacheVersionAsync()
     {
-        if (!_memoryCache.TryGetValue("movie_cache_version", out string? version) || string.IsNullOrEmpty(version))
+        var version = await _cache.GetStringAsync("movie_cache_version");
+        if (string.IsNullOrEmpty(version))
         {
             version = Guid.NewGuid().ToString();
-            _memoryCache.Set("movie_cache_version", version); 
+            await _cache.SetStringAsync("movie_cache_version", version);
         }
         return version;
     }
 
-    private void InvalidateMovieCache()
+    private async Task InvalidateMovieCacheAsync()
     {
-        _memoryCache.Set("movie_cache_version", Guid.NewGuid().ToString());
+        await _cache.SetStringAsync("movie_cache_version", Guid.NewGuid().ToString());
     }
 
     public async Task<PagedResponseDto<MovieResponseDto>> GetAllMoviesAsync(MovieQueryParametersDto queryParameters)
     {
-        string currentVersion = GetMovieCacheVersion(); 
+        string currentVersion = await GetMovieCacheVersionAsync();
         string searchHash = GenerateSearchHash(queryParameters.SearchTerm);
-        
+
         string cacheKey = $"all_movies_v{currentVersion}_p{queryParameters.PageNumber}_s{queryParameters.PageSize}_g{queryParameters.Genre}_h{searchHash}_sort{queryParameters.SortBy}_{queryParameters.IsDescending}";
 
-        if (_memoryCache.TryGetValue(cacheKey, out PagedResponseDto<MovieResponseDto>? cachedResult) && cachedResult != null)
+        var cachedData = await _cache.GetStringAsync(cacheKey);
+        if (!string.IsNullOrEmpty(cachedData))
         {
-            return cachedResult;
+            return JsonSerializer.Deserialize<PagedResponseDto<MovieResponseDto>>(cachedData)!;
         }
 
         bool isLocked = await _semaphore.WaitAsync(TimeSpan.FromSeconds(3));
-        
+
         try
         {
             if (isLocked)
             {
-                if (_memoryCache.TryGetValue(cacheKey, out cachedResult) && cachedResult != null)
+                cachedData = await _cache.GetStringAsync(cacheKey);
+                if (!string.IsNullOrEmpty(cachedData))
                 {
-                    return cachedResult;
+                    return JsonSerializer.Deserialize<PagedResponseDto<MovieResponseDto>>(cachedData)!;
                 }
             }
 
-            var baseQuery = _context.Movies.AsNoTracking().Include(m => m.Owner).AsQueryable(); 
+            var baseQuery = _context.Movies.AsNoTracking().Include(m => m.Owner).AsQueryable();
             var result = await CreatePagedResponseAsync(baseQuery, queryParameters);
 
-            _memoryCache.Set(cacheKey, result, TimeSpan.FromMinutes(5));
+            var serializedResult = JsonSerializer.Serialize(result);
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            };
+            await _cache.SetStringAsync(cacheKey, serializedResult, cacheOptions);
 
             return result;
         }
@@ -82,14 +93,15 @@ public class MovieService : IMovieService
 
     public async Task<PagedResponseDto<MovieResponseDto>> GetMyMoviesAsync(int userId, MovieQueryParametersDto queryParameters)
     {
-        string currentVersion = GetMovieCacheVersion(); 
+        string currentVersion = await GetMovieCacheVersionAsync();
         string searchHash = GenerateSearchHash(queryParameters.SearchTerm);
-        
+
         string cacheKey = $"my_movies_u{userId}_v{currentVersion}_p{queryParameters.PageNumber}_s{queryParameters.PageSize}_g{queryParameters.Genre}_h{searchHash}_sort{queryParameters.SortBy}_{queryParameters.IsDescending}";
 
-        if (_memoryCache.TryGetValue(cacheKey, out PagedResponseDto<MovieResponseDto>? cachedResult) && cachedResult != null)
+        var cachedData = await _cache.GetStringAsync(cacheKey);
+        if (!string.IsNullOrEmpty(cachedData))
         {
-            return cachedResult;
+            return JsonSerializer.Deserialize<PagedResponseDto<MovieResponseDto>>(cachedData)!;
         }
 
         bool isLocked = await _semaphore.WaitAsync(TimeSpan.FromSeconds(3));
@@ -98,16 +110,22 @@ public class MovieService : IMovieService
         {
             if (isLocked)
             {
-                if (_memoryCache.TryGetValue(cacheKey, out cachedResult) && cachedResult != null)
+                cachedData = await _cache.GetStringAsync(cacheKey);
+                if (!string.IsNullOrEmpty(cachedData))
                 {
-                    return cachedResult;
+                    return JsonSerializer.Deserialize<PagedResponseDto<MovieResponseDto>>(cachedData)!;
                 }
             }
 
             var baseQuery = _context.Movies.AsNoTracking().Include(m => m.Owner).Where(m => m.UserId == userId).AsQueryable();
             var result = await CreatePagedResponseAsync(baseQuery, queryParameters);
 
-            _memoryCache.Set(cacheKey, result, TimeSpan.FromMinutes(5));
+            var serializedResult = JsonSerializer.Serialize(result);
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            };
+            await _cache.SetStringAsync(cacheKey, serializedResult, cacheOptions);
 
             return result;
         }
@@ -116,7 +134,7 @@ public class MovieService : IMovieService
             if (isLocked) _semaphore.Release();
         }
     }
-    
+
     public async Task<MovieResponseDto> UpdateMovieAsync(int id, MovieUpdateDto movieDto, int userId, bool isAdmin)
     {
         var movie = await _context.Movies.Include(m => m.Owner).FirstOrDefaultAsync(m => m.Id == id);
@@ -132,9 +150,9 @@ public class MovieService : IMovieService
         movie.Genre = movieDto.Genre;
 
         await _context.SaveChangesAsync();
-        InvalidateMovieCache();
+        await InvalidateMovieCacheAsync();
 
-        return  movie.Adapt<MovieResponseDto>();
+        return movie.Adapt<MovieResponseDto>();
     }
 
     public async Task DeleteMovieAsync(int id, int userId, bool isAdmin)
@@ -148,7 +166,7 @@ public class MovieService : IMovieService
 
         _context.Movies.Remove(movie);
         await _context.SaveChangesAsync();
-        InvalidateMovieCache();
+        await InvalidateMovieCacheAsync();
     }
 
     public async Task<MovieResponseDto> AddMovieAsync(MovieCreateDto movieDto, int userId, string ownerUsername)
@@ -159,17 +177,18 @@ public class MovieService : IMovieService
         movie.UserId = userId;
 
         _context.Movies.Add(movie);
-        await _context.SaveChangesAsync(); 
-        InvalidateMovieCache();
+        await _context.SaveChangesAsync();
+        await _elasticClient.IndexAsync(movie, i => i.Index("movies"));
+        await InvalidateMovieCacheAsync();
 
         var response = movie.Adapt<MovieResponseDto>();
         response.OwnerUsername = ownerUsername;
         return response;
     }
-    
+
     private static string GenerateSearchHash(string? searchTerm)
     {
-        if (string.IsNullOrWhiteSpace(searchTerm)) 
+        if (string.IsNullOrWhiteSpace(searchTerm))
             return "none";
 
         var bytes = System.Text.Encoding.UTF8.GetBytes(searchTerm.ToLower());
@@ -180,6 +199,7 @@ public class MovieService : IMovieService
             .Replace("/", "_")
             .TrimEnd('=');
     }
+
     public async Task<MovieResponseDto> UploadPosterAsync(int movieId, IFormFile file, int userId, bool isAdmin)
     {
         var movie = await _context.Movies.Include(m => m.Owner).FirstOrDefaultAsync(m => m.Id == movieId);
@@ -201,10 +221,11 @@ public class MovieService : IMovieService
         movie.PosterPath = posterUrl;
         await _context.SaveChangesAsync();
 
-        InvalidateMovieCache();
+        await InvalidateMovieCacheAsync();
 
         return movie.Adapt<MovieResponseDto>();
     }
+
     public async Task DeletePosterAsync(int movieId, int userId, bool isAdmin)
     {
         var movie = await _context.Movies.FindAsync(movieId);
@@ -215,10 +236,55 @@ public class MovieService : IMovieService
 
         if (!string.IsNullOrEmpty(movie.PosterPath))
         {
-            _fileService.DeleteFile(movie.PosterPath); 
-            movie.PosterPath = null; 
+            _fileService.DeleteFile(movie.PosterPath);
+            movie.PosterPath = null;
             await _context.SaveChangesAsync();
-            InvalidateMovieCache();
+            await InvalidateMovieCacheAsync();
+        }
+    }
+
+    public async Task<PagedResponseDto<MovieResponseDto>> SearchMoviesAsync(MovieQueryParametersDto queryParameters)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(queryParameters.SearchTerm))
+            {
+                return BuildPagedResponse(new List<MovieResponseDto>(), 0, queryParameters);
+            }
+
+            int pageNumber = queryParameters.PageNumber < 1 ? 1 : queryParameters.PageNumber;
+            int pageSize = queryParameters.PageSize < 1 ? 10 : queryParameters.PageSize;
+
+            var searchResponse = await _elasticClient.SearchAsync<Movie>(s => s
+                .Index("movies")
+                .Query(q => q
+                    .Bool(b => b
+                        .Should(
+                            sh => sh.Match(m => m.Field(f => f.Title).Query(queryParameters.SearchTerm).Boost(2.0f)), 
+                            sh => sh.Match(m => m.Field(f => f.Description).Query(queryParameters.SearchTerm).Fuzziness(new Fuzziness(1)))   
+                        )
+                    )
+                )
+                .From((pageNumber - 1) * pageSize)
+                .Size(pageSize)
+            );
+
+            if (!searchResponse.IsValidResponse)
+            {
+                _logger.LogError($"ES Xətası: {searchResponse.DebugInformation}");
+                return BuildPagedResponse(new List<MovieResponseDto>(), 0, queryParameters);
+            }
+
+            var movies = searchResponse.Documents.Adapt<List<MovieResponseDto>>();
+
+            long totalRecords = searchResponse.Total;
+
+            return BuildPagedResponse(movies, (int)totalRecords, queryParameters);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Axtarış zamanı xəta: {ex.Message}");
+            return BuildPagedResponse(new List<MovieResponseDto>(), 0, queryParameters);
         }
     }
 
@@ -227,13 +293,7 @@ public class MovieService : IMovieService
         if (queryParameters.Genre.HasValue)
             query = query.Where(m => m.Genre == queryParameters.Genre.Value);
 
-        if (!string.IsNullOrWhiteSpace(queryParameters.SearchTerm))
-        {
-            query = query.Where(m => EF.Functions.ILike(m.Title, $"%{queryParameters.SearchTerm}%"));
-        }
-
         int totalRecords = await query.CountAsync();
-        int totalPages = (int)Math.Ceiling(totalRecords / (double)queryParameters.PageSize);
 
         if (!string.IsNullOrWhiteSpace(queryParameters.SortBy))
         {
@@ -242,7 +302,7 @@ public class MovieService : IMovieService
             else if (queryParameters.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
                 query = queryParameters.IsDescending ? query.OrderByDescending(m => m.Title) : query.OrderBy(m => m.Title);
         }
-        else 
+        else
         {
             query = query.OrderByDescending(m => m.Id);
         }
@@ -250,14 +310,38 @@ public class MovieService : IMovieService
         var movies = await query
             .Skip((queryParameters.PageNumber - 1) * queryParameters.PageSize)
             .Take(queryParameters.PageSize)
-            .ProjectToType<MovieResponseDto>() 
+            .ProjectToType<MovieResponseDto>()
             .ToListAsync();
+
+        return BuildPagedResponse(movies, totalRecords, queryParameters);
+    }
+    public async Task SyncMoviesToElasticsearchAsync()
+    {
+        var movies = await _context.Movies.AsNoTracking().ToListAsync();
+
+        if (movies.Any())
+        {
+            var bulkResponse = await _elasticClient.IndexManyAsync(movies, "movies");
+
+            if (!bulkResponse.IsSuccess())
+            {
+                _logger.LogError("Elasticsearch sinxronizasiyası zamanı xəta baş verdi.");
+                throw new Exception("Filmləri Elasticsearch-ə yükləmək mümkün olmadı.");
+            }
+        }
+    }
+    private PagedResponseDto<MovieResponseDto> BuildPagedResponse(List<MovieResponseDto> data, int totalRecords, MovieQueryParametersDto queryParameters)
+    {
+        int totalPages = (int)Math.Ceiling(totalRecords / (double)queryParameters.PageSize);
 
         var meta = new PaginationMetaDto
         {
-            TotalRecords = totalRecords, TotalPages = totalPages,
-            PageNumber = queryParameters.PageNumber, PageSize = queryParameters.PageSize,
-            HasNext = queryParameters.PageNumber < totalPages, HasPrevious = queryParameters.PageNumber > 1
+            TotalRecords = totalRecords,
+            TotalPages = totalPages,
+            PageNumber = queryParameters.PageNumber,
+            PageSize = queryParameters.PageSize,
+            HasNext = queryParameters.PageNumber < totalPages,
+            HasPrevious = queryParameters.PageNumber > 1
         };
 
         var links = new PaginationLinksDto
@@ -269,7 +353,9 @@ public class MovieService : IMovieService
 
         return new PagedResponseDto<MovieResponseDto>
         {
-            Data = movies, Meta = meta, Links = links 
+            Data = data,
+            Meta = meta,
+            Links = links
         };
     }
 }
